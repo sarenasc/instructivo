@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instructivo de Proceso Planta Almahue</title>
+ 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="../assets/css/styles.css">
+
+</head>
+<body class="p-4">
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Instructivo -- AgroIndustrial Almahue</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="procesosDropdown" role="button" data-bs-toggle="dropdown">
+                            Proceso
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../Procesos/instructivo.html">Creacion de Instructivo</a></li>
+                            <li><a class="dropdown-item" href="../Procesos/exportar_instructivo.html">Descargar Instructivo</a></li>
+                            <li><a class="dropdown-item" href="../Procesos/copiar_instructivo.html">Copiar Instructivo</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="configDropdown" role="button" data-bs-toggle="dropdown">
+                            Configuración
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../Configuracion/calibre.html">Calibre</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/categoria.html">Categoría</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/embalaje.html">Embalaje</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/etiqueta.html">Etiqueta</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/pallet.html">Pallet</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/plu.html">PLU</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/exportadora.html">Exportadora</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/destino.html">Destino</a></li>
+                            <li><a class="dropdown-item" href="../Configuracion/inst_altura_pallet.html">Altura Pallet</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+  <div class="container">
+
+  
+    <h2 class="mb-4">Instructivo de Proceso</h2>
+
+    <!-- Selector de instructivo existente -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="selectInstructivo" class="form-label">Instructivo existente</label>
+        <select id="selectInstructivo" class="form-select"></select>
+      </div>
+      <div class="col-md-6">
+        <label for="selectVersion" class="form-label">Versión</label>
+        <select id="selectVersion" class="form-select"></select>
+      </div>
+    </div>
+
+    <!-- Cabecera -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Datos Generales</h5>
+        <form id="formCabecera">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="fecha" class="form-label">Fecha</label>
+              <input type="date" id="fecha" name="fecha" class="form-control" required />
+            </div>
+            <div class="col-md-4">
+              <label for="id_exportadora" class="form-label">Exportadora</label>
+              <select id="id_exportadora" name="id_exportadora" class="form-select"  ></select>
+            </div>
+            <div class="col-md-4">
+              <label for="especie" class="form-label">Especie</label>
+              <select id="especie" name="especie" class="form-select"></select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="turno" class="form-label">Turno</label>
+              <input type="text" id="turno" name="turno" class="form-control" />
+            </div>
+            <div class="col-md-4">
+              <label for="version" class="form-label">Versión</label>
+              <input type="text" id="version" name="version" class="form-control" />
+            </div>
+            <div class="col-md-4">
+              <label for="observacion" class="form-label">Observación</label>
+              <input type="text" id="observacion" name="observacion" class="form-control" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Cabecera</button>
+        </form>
+      </div>
+    </div>
+      <div id="mensaje" class="alert d-none" role="alert"></div>
+      <div id="mensajeDetalle" class="alert d-none" role="alert"></div>
+
+    <!-- Detalle -->
+    <div class="card d-none" id="detalleCard">
+      <div class="card-body">
+        <h5 class="card-title">Detalle del Instructivo Planta Almahue</h5>
+        <form id="formDetalle">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="id_embalaje" class="form-label">Embalaje</label>
+              <select id="id_embalaje" name="id_embalaje" class="form-select"></select>
+            </div>
+            <div class="col-md-3">
+              <label for="id_calibre" class="form-label">Selecciona los Calibres</label>
+              <select id="id_calibre" name="id_calibre[]" class="form-select" multiple></select>
+            </div>
+            <div class="col-md-3">
+              <label for="cantidad_pedido" class="form-label">Cantidad Pedido</label>
+              <input type="number" id="cantidad_pedido" name="cantidad_pedido" class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label for="id_categoria" class="form-label">Categoría</label>
+              <select id="id_categoria" name="id_categoria" class="form-select"></select>
+            </div>
+             <div class="col-md-3">
+              <label for="id_etiqueta" class="form-label">Etiqueta</label>
+              <select id="id_etiqueta" name="id_etiqueta" class="form-select"></select>
+            </div>
+            <div class="col-md-3">
+              <label for="id_plu" class="form-label">PLU</label>
+              <select id="id_plu" name="id_plu" class="form-select"></select>
+            </div>
+            <div class="col-md-3">
+              <label for="id_destino" class="form-label">Destino</label>
+              <select id="id_destino" name="id_destino" class="form-select"></select>
+            </div>
+            <div class="col-md-6">
+                <label for="selectAlturaPallet" class="form-label">Altura del Pallet</label>
+                      <select id="selectAlturaPallet" name="altura_pallet" class="form-select">
+                  <option value="">Seleccione Altura y Cajas</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label for="id_pallet" class="form-label">Pallet</label>
+              <select id="id_pallet" name="id_pallet" class="form-select"></select>
+            </div>
+            <div class="col-md-6">
+              <label for="numero_pedido" class="form-label">N° Pedido</label>
+              <input type="text" id="numero_pedido" name="numero_pedido" class="form-control" />
+            </div>
+            <div class="col-md-3">
+              <label for="var_etiquetada" class="form-label">Variedad Etiquetada</label>
+              <input type="text" id="var_etiquetada" name="var_etiquetada" class="form-control" />
+            </div>
+            <div class="col-md-12">
+              <label for="observacion_detalle" class="form-label">Observación</label>
+              <input type="text" id="observacion_detalle" name="observacion_detalle" class="form-control" />
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-success">Agregar Detalle</button>
+            </div>
+           
+                <input type="hidden" name="id_cab_instructivo" id="id_cab_instructivo_detalle">
+                <input type="hidden" name="version" id="version_detalle">
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL: Visualizar y Editar Versión -->
+<!-- Modal -->
+<div class="modal fade" id="modalEditarVersion" tabindex="-1" aria-labelledby="modalEditarVersionLabel" aria-hidden="true">
+ <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalEditarVersionLabel">Editar Versión de Instructivo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Cabecera (Solo lectura) -->
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="form-label">Exportadora</label>
+            <input type="text" id="readonlyExportadora" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Especie</label>
+            <input type="text" id="readonlyEspecie" class="form-control" readonly>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Turno</label>
+            <input type="text" id="readonlyTurno" class="form-control" readonly>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Versión</label>
+            <input type="text" id="readonlyVersion" class="form-control" readonly>
+          </div>
+          <div class="col-md-12 mt-2">
+            <label class="form-label">Observación</label>
+            <textarea id="readonlyObservacion" class="form-control" rows="2" readonly></textarea>
+          </div>
+        </div>
+
+        <!-- Tabla editable -->
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle text-center" id="tablaDetalleEditable">
+            <thead class="table-light">
+              <tr>
+                <th>N° Pedido</th>
+                <th>Embalaje</th>
+                <th>Etiqueta</th>
+                <th>Calibre</th>
+                <th>Cantidad</th>
+                <th>Categoría</th>
+                <th>PLU</th>
+                <th>Destino</th>
+                <th>Altura Pallet</th>
+                <th>Pallet</th>
+                <th>Var. Etiquetada</th>
+                <th>Observación</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button type="button" class="btn btn-outline-primary" id="btnAgregarFila">Agregar Fila</button>
+          <button type="button" class="btn btn-success" id="btnGuardarNuevaVersion">Guardar Nueva Versión</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+ 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script src="../assets/js/instructivo.js"></script>
+  <script src="../assets/js/detalle_instructivo.js"></script>
+  <script src="../assets/js/modal_instructivo.js"></script>
+  <script src="../assets/js/instructivo_selector.js"></script>
+ 
+</html>

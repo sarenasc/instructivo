@@ -1,0 +1,56 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f2f4f8;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.filtros select {
+  margin-right: 10px;
+  padding: 6px;
+}
+
+h1 {
+  color: #2f5061;
+}
+
+.grupo {
+  background: #e8f1f5;
+  padding: 10px;
+  margin: 20px 0;
+  border-left: 4px solid #497ea6;
+  border-radius: 4px;
+}
+
+.grupo h3 {
+  color: #2b4b62;
+  margin: 0 0 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th {
+  background: #bcd3e4;
+  color: #2c3e50;
+  padding: 8px;
+  border-bottom: 2px solid #2c3e50;
+}
+
+td {
+  padding: 8px;
+  border-bottom: 1px solid #d1dce5;
+}
+
+tr:hover {
+  background: #f1f9ff;
+}
