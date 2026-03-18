@@ -10,6 +10,8 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
 
 $id_instructivo = $_GET['id_instructivo'] ?? null;
 $version = $_GET['version'] ?? null;
@@ -45,7 +47,7 @@ $sqlDet = "SELECT
     et.Nombre_etiqueta,
     d.nombre_destino,
     pl.plu,
-    CONCAT(ca.cod_categoria,' - ',ca.nombre_categoria) AS categoria,
+    ca.nombre_categoria AS categoria,
     p.Descrip_pallet,
     i.altura_pallet,
     CONCAT(ap.altura,'/',ap.cajas) as Altura,
@@ -161,7 +163,7 @@ $sheet->getPageSetup()->setPaperSize(PageSetup::PAPERSIZE_LETTER);
 $styleTitulo = [
     'font' => [
         'bold' => true,
-        'size' => 14,
+        'size' => 48,
         'name' => 'Arial',
     ],
     'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
@@ -169,7 +171,7 @@ $styleTitulo = [
 $styleHeader = [
     'font' => [
         'bold' => true,
-        'size' => 12,
+        'size' => 36,
     ],
     'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                'startColor' => ['argb' => 'FFD9D9D9']],
@@ -181,7 +183,7 @@ $styleYellowFill = [
                'startColor' => ['argb' => 'FFFFFF00']],
     'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
     'font' => [
-        'size'=> 12
+        'size'=> 36
     ],
 ];
 $styleYellowFillObs = [
@@ -193,10 +195,18 @@ $styleYellowFillObs = [
     ],
 ];
 $styleTableCell = [
-    'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
-    'alignment' => ['horizontal' => 'center'],
+    'borders' => [
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN
+        ]
+    ],
+    'alignment' => [
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
+        'vertical'   => Alignment::VERTICAL_CENTER,
+        'wrapText'   => true
+    ],
     'font' => [
-        'size' => 12,
+        'size' => 48,
         'bold' => true
     ]
 ];
@@ -212,7 +222,7 @@ $EstiloLineaA = [
         'vertical' => 'center'
     ],
     'font' => [
-        'size'=> 12,
+        'size'=> 36,
         'bold' => true
     ]
 ];
@@ -229,7 +239,7 @@ $EstiloLineaB = [
         'vertical' => 'center'
     ],
     'font' => [
-        'size'=> 12,
+        'size'=> 36,
     ]
 ];
 
@@ -370,8 +380,8 @@ foreach ($agrupadoPorPedido as $pedido => $filas) {
 
 // segunda tabla de paletizaje
 $filaEncabezados = $filaContenido + 6;
-$sheet->mergeCells('C'.$filaEncabezados .':N'.($filaEncabezados + 1))->setCellValue('C'.$filaEncabezados, 'INFORMACION DE PALETIZAJE');
-$sheet->getStyle('C'.$filaEncabezados .':N'.($filaEncabezados + 1))->applyFromArray($styleTitulo);
+$sheet->mergeCells('A'.$filaEncabezados .':N'.($filaEncabezados + 1))->setCellValue('A'.$filaEncabezados, 'INFORMACION DE PALETIZAJE');
+$sheet->getStyle('A'.$filaEncabezados .':N'.($filaEncabezados + 1))->applyFromArray($styleTitulo);
 $filaEncabezados += 3;
 $colIndex = 3;
 
