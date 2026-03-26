@@ -1,43 +1,87 @@
 <?php
-include 'conexion.php';
+require_once("../conexion.php");
 
-$accion = $_POST['accion'] ?? '';
-
-$cod_exportadora = $_POST['cod_exportadora'] ?? '';
-$nombre_exportadora = $_POST['nombre_exportadora'] ?? '';
-
-if (!$cod_exportadora || !$nombre_exportadora) {
-    echo "Todos los campos son obligatorios.";
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = $_POST['accion'] ?? '';
+    
+    switch ($accion) {
+        case 'guardar':
+            guardar($conn);
+            break;
+        case 'modificar':
+            modificar($conn);
+            break;
+        case 'eliminar':
+            eliminar($conn);
+            break;
+        default:
+            echo "Acción no válida";
+    }
 }
 
-if ($accion == "guardar") {
-    $sql = "INSERT INTO inst_exportadora (cod_exportadora, Nombre_Exportadora) VALUES (?, ?)";
-} elseif ($accion == "modificar") {
-    $sql = "UPDATE inst_exportadora SET Nombre_Exportadora = ? WHERE cod_exportadora = ?";
-} elseif ($accion == "eliminar") {
-    $sql = "DELETE FROM inst_exportadora WHERE cod_exportadora = ?";
-} else {
-    echo "Acción no válida.";
-    exit;
+function guardar($conn) {
+    $codigo = $_POST['cod_exportadora'] ?? '';
+    $nombre = $_POST['nombre_exportadora'] ?? '';
+    
+    if (empty($codigo) || empty($nombre)) {
+        echo "Error: Código y nombre son obligatorios";
+        return;
+    }
+    
+    $checkSql = "SELECT COUNT(*) as total FROM exportadora WHERE cod_exportadora = '$codigo'";
+    $checkResult = sqlsrv_query($conn, $checkSql);
+    $checkRow = sqlsrv_fetch_array($checkResult, SQLSRV_FETCH_ASSOC);
+    
+    if ($checkRow['total'] > 0) {
+        echo "Error: Ya existe una exportadora con ese código";
+        return;
+    }
+    
+    $sql = "INSERT INTO exportadora (cod_exportadora, nombre_exportadora) VALUES ('$codigo', '$nombre')";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Exportadora guardada correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al guardar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-$params = ($accion == "eliminar") ? [$cod_exportadora] : [ $cod_exportadora, $nombre_exportadora];
-$stmt = sqlsrv_query($conn, $sql, $params);
-
-if ($stmt === false) {
-    // Muestra errores detallados
-    die(print_r(sqlsrv_errors(), true));
+function modificar($conn) {
+    $id = $_POST['id_exportadora'] ?? null;
+    $codigo = $_POST['cod_exportadora'] ?? '';
+    $nombre = $_POST['nombre_exportadora'] ?? '';
+    
+    if (empty($id) || empty($codigo) || empty($nombre)) {
+        echo "Error: Datos incompletos";
+        return;
+    }
+    
+    $sql = "UPDATE exportadora SET cod_exportadora = '$codigo', nombre_exportadora = '$nombre' WHERE id_exportadora = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Exportadora modificada correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al modificar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-
-
-if ($stmt) {
-    echo ucfirst($accion) . " realizado con éxito.";
-} else {
-    echo "Error en la operación.";
+function eliminar($conn) {
+    $id = $_POST['id_exportadora'] ?? null;
+    
+    if (empty($id)) {
+        echo "Error: ID no válido";
+        return;
+    }
+    
+    $sql = "DELETE FROM exportadora WHERE id_exportadora = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Exportadora eliminada correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al eliminar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
-
-sqlsrv_free_stmt($stmt);
-sqlsrv_close($conn);
 ?>

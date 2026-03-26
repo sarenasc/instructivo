@@ -21,12 +21,22 @@
             const contenedor = document.getElementById('contenedor-datos');
             contenedor.innerHTML = '';
 
-            datos.forEach(grupo => {
+            const agrupado = {};
+
+            datos.forEach(fila => {
+                const clave = fila['nombre_calibre'];
+                if (!agrupado[clave]) agrupado[clave] = [];
+                agrupado[clave].push(fila);
+            });
+
+            for (const calibre in agrupado) {
+                const grupo = agrupado[calibre];
+
                 const seccion = document.createElement('div');
                 seccion.className = 'mb-5';
 
                 const titulo = document.createElement('h3');
-                titulo.textContent = `Calibre(s): ${grupo['nombre_calibre']} (Categoría: ${grupo['categoria']})`;
+                titulo.textContent = `Calibre(s): ${grupo[0]['nombre_calibre']}`;
                 titulo.className = 'text-primary border-bottom pb-2';
                 seccion.appendChild(titulo);
 
@@ -38,8 +48,8 @@
 
                 const thead = document.createElement('thead');
                 const encabezado = document.createElement('tr');
-                Object.keys(grupo).forEach(col => {
-                    if (col !== 'nombre_calibre' && col !== 'categoria') {
+                Object.keys(grupo[0]).forEach(col => {
+                    if (col !== 'nombre_calibre') {
                         const th = document.createElement('th');
                         th.textContent = col;
                         encabezado.appendChild(th);
@@ -49,21 +59,23 @@
                 tabla.appendChild(thead);
 
                 const tbody = document.createElement('tbody');
-                const tr = document.createElement('tr');
-                Object.entries(grupo).forEach(([col, valor]) => {
-                    if (col !== 'nombre_calibre' && col !== 'categoria') {
-                        const td = document.createElement('td');
-                        td.textContent = valor;
-                        tr.appendChild(td);
-                    }
+                grupo.forEach(fila => {
+                    const tr = document.createElement('tr');
+                    Object.entries(fila).forEach(([col, valor]) => {
+                        if (col !== 'nombre_calibre') {
+                            const td = document.createElement('td');
+                            td.textContent = valor;
+                            tr.appendChild(td);
+                        }
+                    });
+                    tbody.appendChild(tr);
                 });
-                tbody.appendChild(tr);
                 tabla.appendChild(tbody);
 
                 tablaWrapper.appendChild(tabla);
                 seccion.appendChild(tablaWrapper);
                 contenedor.appendChild(seccion);
-            });
+            }
         }
 
         setInterval(cargarDatosAgrupados, 60000);

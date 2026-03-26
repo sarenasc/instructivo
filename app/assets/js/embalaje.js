@@ -1,78 +1,152 @@
 document.addEventListener("DOMContentLoaded", function () {
-    cargarEspecies();
     cargarEtiquetas();
-    cargarExportadora();
+    cargarEspecies();
+    cargarExportadoras();
+    cargarTabla();
 
-    document.getElementById("btnGuardar").addEventListener("click", function () {
-        enviarFormulario("guardar");
-    });
-
-    document.getElementById("btnModificar").addEventListener("click", function () {
-        enviarFormulario("modificar");
-    });
-
-    document.getElementById("btnEliminar").addEventListener("click", function () {
-        enviarFormulario("eliminar");
-    });
+    document.getElementById("btnGuardar").addEventListener("click", () => procesar("guardar"));
+    document.getElementById("btnModificar").addEventListener("click", () => procesar("modificar"));
+    document.getElementById("btnEliminar").addEventListener("click", eliminar);
+    document.getElementById("btnLimpiar").addEventListener("click", limpiar);
 });
+
+function cargarEtiquetas() {
+    fetch("../obtener_etiquetas.php")
+        .then(r => r.json())
+        .then(data => {
+            const select = document.getElementById("etiqueta");
+            select.innerHTML = '<option value="">Seleccione una etiqueta</option>';
+            data.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.id_etiqueta;
+                option.textContent = item.nombre_etiqueta;
+                select.appendChild(option);
+            });
+        })
+        .catch(e => console.error("Error cargando etiquetas:", e));
+}
 
 function cargarEspecies() {
     fetch("../api_especies.php")
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
-            let select = document.getElementById("especie");
+            const select = document.getElementById("especie");
             select.innerHTML = '<option value="">Seleccione una especie</option>';
-            data.forEach(especie => {
-                let option = document.createElement("option");
-                option.value = especie.id_especie;
-                option.textContent = especie.especie;
+            data.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.id_especie;
+                option.textContent = item.especie;
                 select.appendChild(option);
             });
         })
-        .catch(error => console.error("Error cargando especies:", error));
+        .catch(e => console.error("Error cargando especies:", e));
 }
 
-function cargarEtiquetas() {
-    fetch("../api_etiqueta.php")
-        .then(response => response.json())
+function cargarExportadoras() {
+    fetch("../obtener_exportadoras.php")
+        .then(r => r.json())
         .then(data => {
-            let select = document.getElementById("etiqueta");
-            select.innerHTML = '<option value="">Seleccione una etiqueta</option>';
-            data.forEach(etiqueta => {
-                let option = document.createElement("option");
-                option.value = etiqueta.id;
-                option.textContent = etiqueta.Nombre_etiqueta;
-                select.appendChild(option);
-            });
-        })
-        .catch(error => console.error("Error cargando etiquetas:", error));
-}
-
-function cargarExportadora() {
-    fetch("../api_exportadora.php")
-        .then(response => response.json())
-        .then(data => {
-            let select = document.getElementById("exportadora");
+            const select = document.getElementById("exportadora");
             select.innerHTML = '<option value="">Seleccione una exportadora</option>';
-            data.forEach(exportadora => {
-                let option = document.createElement("option");
-                option.value = exportadora.id;
-                option.textContent = exportadora.Nombre_Exportadora;
+            data.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.id;
+                option.textContent = item.Nombre_Exportadora;
                 select.appendChild(option);
             });
         })
-        .catch(error => console.error("Error cargando etiquetas:", error));
+        .catch(e => console.error("Error cargando exportadoras:", e));
 }
 
-function enviarFormulario(accion) {
-    let formData = new FormData(document.getElementById("formEmbalaje"));
-    formData.append("accion", accion);
+function cargarTabla() {
+    fetch("../obtener_embalajes.php")
+        .then(r => r.json())
+        .then(data => {
+            const tbody = document.querySelector("#tablaEmbalaje tbody");
+            tbody.innerHTML = "";
+            
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay registros</td></tr>';
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${item.id_embalaje}</td>
+                    <td>${item.codigo_embalaje}</td>
+                    <td>${item.nombre_embalaje}</td>
+                    <td>${item.peso_embalaje || 'N/A'}</td>
+                    <td>${item.nombre_etiqueta || 'N/A'}</td>
+                    <td>${item.especie || 'N/A'}</td>
+                    <td>${item.Nombre_Exportadora || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id_embalaje})">✏️ Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id_embalaje})">🗑️ Eliminar</button>
+                    </td>
+                `;
+            });
+        })
+        .catch(e => {
+            console.error("Error cargando tabla:", e);
+            const tbody = document.querySelector("#tablaEmbalaje tbody");
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error cargando datos</td></tr>';
+        });
+}
 
-    fetch("../procesar_embalaje.php", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => alert(data))
-    .catch(error => console.error("Error en el proceso:", error));
+function cargarEmbalaje(id) {
+    fetch(`../obtener_embalaje_por_id.php?id=${id}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data) {
+                document.getElementById("id_embalaje").value = data.id_embalaje;
+                document.getElementById("codigo_embalaje").value = data.codigo_embalaje;
+                document.getElementById("nombre_embalaje").value = data.nombre_embalaje;
+                document.getElementById("peso_embalaje").value = data.peso_embalaje || '';
+                document.getElementById("etiqueta").value = data.id_etiqueta || '';
+                document.getElementById("especie").value = data.id_especie || '';
+                document.getElementById("exportadora").value = data.id_exportadora || '';
+            }
+        })
+        .catch(e => console.error("Error cargando embalaje:", e));
+}
+
+function eliminarEmbalaje(id) {
+    if (!confirm("¿Eliminar este embalaje?")) return;
+    
+    const fd = new FormData();
+    fd.append("accion", "eliminar");
+    fd.append("id_embalaje", id);
+    
+    fetch("../procesar_embalaje.php", {method: "POST", body: fd})
+        .then(r => r.text())
+        .then(d => {
+            alert(d);
+            cargarTabla();
+        })
+        .catch(e => console.error("Error:", e));
+}
+
+function procesar(accion) {
+    const fd = new FormData(document.getElementById("formEmbalaje"));
+    fd.append("accion", accion);
+    
+    fetch("../procesar_embalaje.php", {method: "POST", body: fd})
+        .then(r => r.text())
+        .then(d => {
+            alert(d);
+            if (d.includes("éxito") || d.includes("correctamente") || d.includes("Eliminado")) {
+                limpiar();
+                cargarTabla();
+                cargarEtiquetas();
+                cargarEspecies();
+                cargarExportadoras();
+            }
+        })
+        .catch(e => console.error("Error:", e));
+}
+
+function limpiar() {
+    document.getElementById("formEmbalaje").reset();
+    document.getElementById("id_embalaje").value = "";
 }

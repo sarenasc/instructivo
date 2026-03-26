@@ -3,7 +3,7 @@ include 'conexion.php';
 
 header('Content-Type: application/json');
 
-$sql = "SELECT id_especie, codigo_especie as 'Codigo Especie', especie as 'Especie' FROM SistGestion.dbo.especie";
+$sql = "SELECT id_especie, especie FROM SistGestion.dbo.especie";
 $stmt = sqlsrv_query($conn, $sql);
 
 $especies = [];

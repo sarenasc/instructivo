@@ -1,0 +1,1 @@
+<?php require_once("../conexion.php"); header('Content-Type: application/json'); $sql = "SELECT * FROM pallet ORDER BY 1"; $stmt = sqlsrv_query($conn, $sql); $r = []; if($stmt) { while($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) $r[] = $row; echo json_encode($r); } else { echo json_encode([]); } ?> 

@@ -4,17 +4,31 @@ from fastapi.templating import Jinja2Templates
 import pyodbc
 import threading
 import time
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# Configura tu conexión a SQL Server
+# ===========================================
+# CONFIGURACIÓN DESDE VARIABLES DE ENTORNO
+# ===========================================
+DB_SERVER = os.getenv('DB_SERVER', '192.168.19.4')
+DB_USER = os.getenv('DB_USER', 'sa')
+DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+DB_DATABASE = os.getenv('DB_DATABASE', 'SistGestion')
+DB_DRIVER = os.getenv('PYTHON_DB_DRIVER', 'ODBC Driver 17 for SQL Server')
+
+# Construir string de conexión
 conn_str = (
-    "DRIVER={ODBC Driver 17 for SQL Server};"
-    "SERVER=192.168.19.4;"
-    "DATABASE=SistGestion;"
-    "UID=sa;"
-    "PWD=Robin@2021"
+    f"DRIVER={{{DB_DRIVER}}};"
+    f"SERVER={DB_SERVER};"
+    f"DATABASE={DB_DATABASE};"
+    f"UID={DB_USER};"
+    f"PWD={DB_PASSWORD}"
 )
 
 datos_cache = []
@@ -76,20 +90,16 @@ from collections import defaultdict
 
 @app.get("/datos")
 async def obtener_datos():
-    agrupado = defaultdict(lambda: {"calibres": set(), "categoria": None})
+    agrupado = defaultdict(list)
 
     for fila in datos_cache:
-        clave = tuple((k, v) for k, v in fila.items() if k not in ['nombre_calibre', 'categoria'])
-        agrupado[clave]["calibres"].add(fila['nombre_calibre'])
-        agrupado[clave]["categoria"] = fila['categoria']
+        clave = tuple((k, v) for k, v in fila.items() if k != 'nombre_calibre')
+        agrupado[clave].append(fila['nombre_calibre'])
 
     resultado = []
-    for clave, valores in agrupado.items():
+    for clave, calibres in agrupado.items():
         fila_dict = dict(clave)
-        fila_dict['nombre_calibre'] = ' - '.join(sorted(valores["calibres"]))
-        fila_dict['categoria'] = valores["categoria"]
+        fila_dict['nombre_calibre'] = ', '.join(sorted(set(calibres)))
         resultado.append(fila_dict)
 
     return resultado
-
-

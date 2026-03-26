@@ -4,13 +4,8 @@ $(document).ready(function () {
     if (response.success) {
       $('#selectInstructivo').empty().append('<option value="">Seleccione un instructivo</option>');
       response.data.forEach(function (item) {
-
-          const fecha = new Date(item.fecha.date);
-          const dia = fecha.getDate().toString().padStart(2, '0');
-          const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-          const anio = fecha.getFullYear();
-          const fechaFormateada = `${dia}/${mes}/${anio}`;
-
+        const fechaFormateada = item.fecha_formateada || 'Sin fecha';
+        
         $('#selectInstructivo').append(
           $('<option>', {
             value: item.id_instructivo,

@@ -124,6 +124,10 @@ function mostrarModalVersion(idInstructivo, version) {
 
   const modal = new bootstrap.Modal(document.getElementById('modalEditarVersion'));
   modal.show();
+
+
+
+
 }
 
 // Agregar fila
@@ -216,4 +220,3 @@ $('#btnGuardarNuevaVersion').on('click', function () {
     }
   });
 });
-

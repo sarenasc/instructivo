@@ -15,6 +15,20 @@ $instructivos = [];
 
 if ($stmt) {
   while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+    // Formatear fecha correctamente
+    if ($row['fecha'] instanceof DateTime) {
+      $row['fecha_formateada'] = $row['fecha']->format('d/m/Y');
+    } elseif ($row['fecha']) {
+      // Si es string, intentar convertir
+      try {
+        $date = new DateTime($row['fecha']);
+        $row['fecha_formateada'] = $date->format('d/m/Y');
+      } catch (Exception $e) {
+        $row['fecha_formateada'] = 'Sin fecha';
+      }
+    } else {
+      $row['fecha_formateada'] = 'Sin fecha';
+    }
     $instructivos[] = $row;
   }
   echo json_encode(["success" => true, "data" => $instructivos]);

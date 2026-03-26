@@ -1,42 +1,89 @@
 <?php
-include 'conexion.php';
+require_once("../conexion.php");
 
-$accion = $_POST['accion'] ?? '';
-
-$cod_pallet = $_POST['cod_pallet'] ?? '';
-$descrip_pallet = $_POST['descrip_pallet'] ?? '';
-$id_exportadora = $_POST['id_exportadora'] ?? '';
-
-if (!$cod_pallet || !$descrip_pallet || !$id_exportadora) {
-    echo "Todos los campos son obligatorios.";
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = $_POST['accion'] ?? '';
+    
+    switch ($accion) {
+        case 'guardar':
+            guardar($conn);
+            break;
+        case 'modificar':
+            modificar($conn);
+            break;
+        case 'eliminar':
+            eliminar($conn);
+            break;
+        default:
+            echo "Acción no válida";
+    }
 }
 
-if ($accion == "guardar") {
-    $sql = "INSERT INTO inst_pallet (cod_pallet, Descrip_pallet, id_exportadora) VALUES (?, ?, ?)";
-} elseif ($accion == "modificar") {
-    $sql = "UPDATE inst_pallet SET cod_pallet = ?, descrip_pallet = ?, id_exportadora = ? WHERE cod_pallet = $cod_pallet";
-} elseif ($accion == "eliminar") {
-    $sql = "DELETE FROM inst_pallet WHERE cod_pallet = ?";
-} else {
-    echo "Acción no válida.";
-    exit;
+function guardar($conn) {
+    $codigo = $_POST['cod_pallet'] ?? '';
+    $descripcion = $_POST['descrip_pallet'] ?? '';
+    $id_exportadora = $_POST['id_exportadora'] ?? null;
+    
+    if (empty($codigo) || empty($descripcion)) {
+        echo "Error: Código y descripción son obligatorios";
+        return;
+    }
+    
+    $checkSql = "SELECT COUNT(*) as total FROM pallet WHERE cod_pallet = '$codigo'";
+    $checkResult = sqlsrv_query($conn, $checkSql);
+    $checkRow = sqlsrv_fetch_array($checkResult, SQLSRV_FETCH_ASSOC);
+    
+    if ($checkRow['total'] > 0) {
+        echo "Error: Ya existe un pallet con ese código";
+        return;
+    }
+    
+    $sql = "INSERT INTO pallet (cod_pallet, descrip_pallet, id_exportadora) VALUES ('$codigo', '$descripcion', " . ($id_exportadora ?: 'NULL') . ")";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Pallet guardado correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al guardar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-$params = ($accion == "eliminar") ? [$cod_pallet] : [$cod_pallet,$descrip_pallet, $id_exportadora];
-$stmt = sqlsrv_query($conn, $sql, $params);
-
-if ($stmt === false) {
-    // Muestra errores detallados
-    die(print_r(sqlsrv_errors(), true));
+function modificar($conn) {
+    $id = $_POST['id_pallet'] ?? null;
+    $codigo = $_POST['cod_pallet'] ?? '';
+    $descripcion = $_POST['descrip_pallet'] ?? '';
+    $id_exportadora = $_POST['id_exportadora'] ?? null;
+    
+    if (empty($id) || empty($codigo) || empty($descripcion)) {
+        echo "Error: Datos incompletos";
+        return;
+    }
+    
+    $sql = "UPDATE pallet SET cod_pallet = '$codigo', descrip_pallet = '$descripcion', id_exportadora = " . ($id_exportadora ?: 'NULL') . " WHERE id_pallet = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Pallet modificado correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al modificar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-if ($stmt) {
-    echo ucfirst($accion) . " realizado con éxito.";
-} else {
-    echo "Error en la operación.";
+function eliminar($conn) {
+    $id = $_POST['id_pallet'] ?? null;
+    
+    if (empty($id)) {
+        echo "Error: ID no válido";
+        return;
+    }
+    
+    $sql = "DELETE FROM pallet WHERE id_pallet = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Pallet eliminado correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al eliminar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
-
-sqlsrv_free_stmt($stmt);
-sqlsrv_close($conn);
 ?>

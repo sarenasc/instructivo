@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+    cargarTabla();
+
     document.getElementById("btnGuardar").addEventListener("click", function () {
         enviarFormulario("guardar");
     });
@@ -10,8 +12,48 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("btnEliminar").addEventListener("click", function () {
         enviarFormulario("eliminar");
     });
+
+    document.getElementById("btnLimpiar").addEventListener("click", function () {
+        limpiarFormulario();
+    });
 });
- cargarTabla();
+
+function cargarTabla() {
+    fetch("../obtener_exportadoras.php")
+        .then(response => response.json())
+        .then(data => {
+            let tbody = document.querySelector("#tablaExportadora tbody");
+            tbody.innerHTML = "";
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay registros</td></tr>';
+                return;
+            }
+            
+            data.forEach(item => {
+                let row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${item.id_exportadora}</td>
+                    <td>${item.cod_exportadora}</td>
+                    <td>${item.nombre_exportadora}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="cargarExportadora(${item.id_exportadora}, '${item.cod_exportadora}', '${item.nombre_exportadora}')">
+                            ✏️ Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarExportadora(${item.id_exportadora})">
+                            🗑️ Eliminar
+                        </button>
+                    </td>
+                `;
+            });
+        })
+        .catch(error => {
+            console.error("Error cargando tabla:", error);
+            let tbody = document.querySelector("#tablaExportadora tbody");
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error cargando datos</td></tr>';
+        });
+}
+
 function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formExportadora"));
     formData.append("accion", accion);
@@ -21,35 +63,42 @@ function enviarFormulario(accion) {
         body: formData
     })
     .then(response => response.text())
-    .then(data => alert(data))
-    .catch(error => console.error("Error en la operación:", error));
+    .then(data => {
+        alert(data);
+        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+            limpiarFormulario();
+            cargarTabla();
+        }
+    })
+    .catch(error => console.error("Error en el proceso:", error));
 }
 
- // Función para cargar tabla
-    function cargarTabla() {
-        fetch("../api_exportadora.php")
-            .then(res => res.json())
-            .then(data => {
-                tabla.innerHTML = data.map(row => `
-                    <tr data-id="${row.id}">
-                        <td>${row.Nombre_Exportadora}</td>
-                        <td>${row.cod_exportadora}</td>
-                        
-                    </tr>
-                `).join("");
+function cargarExportadora(id, codigo, nombre) {
+    document.getElementById("id_exportadora").value = id;
+    document.getElementById("cod_exportadora").value = codigo;
+    document.getElementById("nombre_exportadora").value = nombre;
+}
 
-                document.querySelectorAll("#tablaAlturas tbody tr").forEach(tr => {
-                    tr.addEventListener("click", () => {
-                        document.querySelectorAll("#tablaAlturas tbody tr").forEach(row => row.classList.remove("table-primary"));
-                        tr.classList.add("table-primary");
-                        const celdas = tr.children;
-                        //idSeleccionado = tr.dataset.id;
-                       // idEmbalaje.value = data.find(d => d.id == idSeleccionado).id_embalaje;
-                        Nombre_Exportadora.value = celdas[1].textContent;
-                        cod_exportadora.value = celdas[2].textContent;
-                    });
-                });
-            });
+function eliminarExportadora(id) {
+    if (confirm("¿Está seguro de eliminar esta exportadora?")) {
+        let formData = new FormData();
+        formData.append("accion", "eliminar");
+        formData.append("id_exportadora", id);
+
+        fetch("../procesar_exportadora.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data);
+            cargarTabla();
+        })
+        .catch(error => console.error("Error:", error));
     }
+}
 
-   
+function limpiarFormulario() {
+    document.getElementById("formExportadora").reset();
+    document.getElementById("id_exportadora").value = "";
+}

@@ -1,42 +1,89 @@
 <?php
-include 'conexion.php';
+require_once("../conexion.php");
 
-$accion = $_POST['accion'] ?? '';
-
-$codigo_calibre = $_POST['codigo_calibre'] ?? '';
-$nombre_calibre = $_POST['nombre_calibre'] ?? '';
-$especie = $_POST['especie'] ?? '';
-
-if (!$codigo_calibre || !$nombre_calibre || !$especie) {
-    echo "Todos los campos son obligatorios.";
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = $_POST['accion'] ?? '';
+    
+    switch ($accion) {
+        case 'guardar':
+            guardar($conn);
+            break;
+        case 'modificar':
+            modificar($conn);
+            break;
+        case 'eliminar':
+            eliminar($conn);
+            break;
+        default:
+            echo "Acción no válida";
+    }
 }
 
-if ($accion == "guardar") {
-    $sql = "INSERT INTO inst_calibre (cod_calibre, nombre_calibre, id_especie) VALUES (?, ?, ?)";
-} elseif ($accion == "modificar") {
-    $sql = "UPDATE inst_calibre SET cod_calibre = ? ,nombre_calibre = ?, id_especie = ? WHERE cod_calibre = $codigo_calibre and id_especie = $especie";
-} elseif ($accion == "eliminar") {
-    $sql = "DELETE FROM inst_calibre WHERE cod_calibre = ? and id_especie = ?";
-} else {
-    echo "Acción no válida.";
-    exit;
+function guardar($conn) {
+    $codigo = $_POST['codigo_calibre'] ?? '';
+    $nombre = $_POST['nombre_calibre'] ?? '';
+    $id_especie = $_POST['especie'] ?? null;
+    
+    if (empty($codigo) || empty($nombre)) {
+        echo "Error: Código y nombre son obligatorios";
+        return;
+    }
+    
+    $checkSql = "SELECT COUNT(*) as total FROM calibre WHERE codigo_calibre = '$codigo'";
+    $checkResult = sqlsrv_query($conn, $checkSql);
+    $checkRow = sqlsrv_fetch_array($checkResult, SQLSRV_FETCH_ASSOC);
+    
+    if ($checkRow['total'] > 0) {
+        echo "Error: Ya existe un calibre con ese código";
+        return;
+    }
+    
+    $sql = "INSERT INTO calibre (codigo_calibre, nombre_calibre, id_especie) VALUES ('$codigo', '$nombre', " . ($id_especie ?: 'NULL') . ")";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Calibre guardado correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al guardar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-$params = ($accion == "eliminar") ? [$codigo_calibre, $especie] : [$codigo_calibre, $nombre_calibre, $especie];
-$stmt = sqlsrv_query($conn, $sql, $params);
-
-if ($stmt === false) {
-    // Muestra errores detallados
-    die(print_r(sqlsrv_errors(), true));
+function modificar($conn) {
+    $id = $_POST['id_calibre'] ?? null;
+    $codigo = $_POST['codigo_calibre'] ?? '';
+    $nombre = $_POST['nombre_calibre'] ?? '';
+    $id_especie = $_POST['especie'] ?? null;
+    
+    if (empty($id) || empty($codigo) || empty($nombre)) {
+        echo "Error: Datos incompletos";
+        return;
+    }
+    
+    $sql = "UPDATE calibre SET codigo_calibre = '$codigo', nombre_calibre = '$nombre', id_especie = " . ($id_especie ?: 'NULL') . " WHERE id_calibre = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Calibre modificado correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al modificar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-if ($stmt) {
-    echo ucfirst($accion) . " realizado con éxito.";
-} else {
-    echo "Error en la operación.";
+function eliminar($conn) {
+    $id = $_POST['id_calibre'] ?? null;
+    
+    if (empty($id)) {
+        echo "Error: ID no válido";
+        return;
+    }
+    
+    $sql = "DELETE FROM calibre WHERE id_calibre = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Calibre eliminado correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al eliminar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
-
-sqlsrv_free_stmt($stmt);
-sqlsrv_close($conn);
 ?>

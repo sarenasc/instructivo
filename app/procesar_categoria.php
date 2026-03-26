@@ -1,43 +1,91 @@
 <?php
-include 'conexion.php';
+require_once("../conexion.php");
 
-$accion = $_POST['accion'] ?? '';
-
-$codigo_categoria = $_POST['codigo_categoria'] ?? '';
-$nombre_categoria = $_POST['nombre_categoria'] ?? '';
-$especie_categoria = $_POST['especie_categoria'] ?? '';
-$exportadora_categoria = $_POST['exportadora'] ?? '';
-
-if (!$codigo_categoria || !$nombre_categoria || !$especie_categoria || !$exportadora_categoria) {
-    echo "Todos los campos son obligatorios.";
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = $_POST['accion'] ?? '';
+    
+    switch ($accion) {
+        case 'guardar':
+            guardar($conn);
+            break;
+        case 'modificar':
+            modificar($conn);
+            break;
+        case 'eliminar':
+            eliminar($conn);
+            break;
+        default:
+            echo "Acción no válida";
+    }
 }
 
-if ($accion == "guardar") {
-    $sql = "INSERT INTO inst_categoria (cod_categoria, nombre_categoria, id_especie, id_exportadora) VALUES (?, ?, ?, ?)";
-} elseif ($accion == "modificar") {
-    $sql = "UPDATE inst_categoria SET cod_categoria = ?, nombre_categoria = ?, id_especie = ?, id_exportadora = ? WHERE cod_categoria = $codigo_categoria and id_especie = $especie_categoria";
-} elseif ($accion == "eliminar") {
-    $sql = "DELETE FROM inst_categoria WHERE cod_categoria = ? and id_especie = ?";
-} else {
-    echo "Acción no válida.";
-    exit;
+function guardar($conn) {
+    $codigo = $_POST['codigo_categoria'] ?? '';
+    $nombre = $_POST['nombre_categoria'] ?? '';
+    $id_especie = $_POST['especie_categoria'] ?? null;
+    $id_exportadora = $_POST['exportadora'] ?? null;
+    
+    if (empty($codigo) || empty($nombre)) {
+        echo "Error: Código y nombre son obligatorios";
+        return;
+    }
+    
+    $checkSql = "SELECT COUNT(*) as total FROM inst_categoria WHERE cod_categoria = '$codigo'";
+    $checkResult = sqlsrv_query($conn, $checkSql);
+    $checkRow = sqlsrv_fetch_array($checkResult, SQLSRV_FETCH_ASSOC);
+    
+    if ($checkRow['total'] > 0) {
+        echo "Error: Ya existe una categoría con ese código";
+        return;
+    }
+    
+    $sql = "INSERT INTO inst_categoria (cod_categoria, nombre_categoria, id_especie, id_exportadora) VALUES ('$codigo', '$nombre', " . ($id_especie ?: 'NULL') . ", " . ($id_exportadora ?: 'NULL') . ")";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Categoría guardada correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al guardar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-$params = ($accion == "eliminar") ? [$codigo_categoria, $especie_categoria] : [$codigo_categoria, $nombre_categoria, $especie_categoria, $exportadora_categoria];
-$stmt = sqlsrv_query($conn, $sql, $params);
-
-if ($stmt === false) {
-    // Muestra errores detallados
-    die(print_r(sqlsrv_errors(), true));
+function modificar($conn) {
+    $id = $_POST['id_categoria'] ?? null;
+    $codigo = $_POST['codigo_categoria'] ?? '';
+    $nombre = $_POST['nombre_categoria'] ?? '';
+    $id_especie = $_POST['especie_categoria'] ?? null;
+    $id_exportadora = $_POST['exportadora'] ?? null;
+    
+    if (empty($id) || empty($codigo) || empty($nombre)) {
+        echo "Error: Datos incompletos";
+        return;
+    }
+    
+    $sql = "UPDATE inst_categoria SET cod_categoria = '$codigo', nombre_categoria = '$nombre', id_especie = " . ($id_especie ?: 'NULL') . ", id_exportadora = " . ($id_exportadora ?: 'NULL') . " WHERE id_categoria = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Categoría modificada correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al modificar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
 
-if ($stmt) {
-    echo ucfirst($accion) . " realizado con éxito.";
-} else {
-    echo "Error en la operación.";
+function eliminar($conn) {
+    $id = $_POST['id_categoria'] ?? null;
+    
+    if (empty($id)) {
+        echo "Error: ID no válido";
+        return;
+    }
+    
+    $sql = "DELETE FROM inst_categoria WHERE id_categoria = $id";
+    
+    if (sqlsrv_query($conn, $sql)) {
+        echo "Categoría eliminada correctamente";
+    } else {
+        $errores = sqlsrv_errors();
+        echo "Error al eliminar: " . ($errores ? $errores[0]['message'] : 'Desconocido');
+    }
 }
-
-sqlsrv_free_stmt($stmt);
-sqlsrv_close($conn);
 ?>

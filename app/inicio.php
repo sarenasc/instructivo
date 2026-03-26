@@ -1,77 +1,80 @@
 <?php
-session_start();
+$titulo_pagina = 'Inicio - Instructivos';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
-   
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Instructivo -- AgroIndustrial Almahue</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="procesosDropdown" role="button" data-bs-toggle="dropdown">
-                            Proceso
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="../app/Procesos/instructivo.html">Creacion de Instructivo</a></li>
-                            <li><a class="dropdown-item" href="../app/Procesos/Pedidos.html">Agregar Pedidos</a></li>
-                            <li><a class="dropdown-item" href="../app/Procesos/exportar_instructivo.html">Descargar Instructivo</a></li>
-                            <li><a class="dropdown-item" href="../app/Procesos/copiar_instructivo.html">Copiar Instructivo</a></li>
-                            <li><a class="dropdown-item" href="../app/Procesos/mostrar_instructivo.html">Desplegar informacion en Pantall</a></li>
-                            
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="configDropdown" role="button" data-bs-toggle="dropdown">
-                            Configuración
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="../app/Configuracion/calibre.html">Calibre</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/categoria.html">Categoría</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/embalaje.html">Embalaje</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/etiqueta.html">Etiqueta</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/pallet.html">Pallet</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/plu.html">PLU</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/exportadora.html">Exportadora</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/destino.html">Destino</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/inst_altura_pallet.html">Altura Pallet</a></li>
-                            <li><a class="dropdown-item" href="../app/Configuracion/edicion_config.html">Edicion de Configuracion</a></li>
-                            <li><a class="dropdown-item" href="../app/logout.php">Salir</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <header class="page-header text-center mt-5">
-        <h1>Inicio</h1>
-        <p>Bienvenido al sistema</p>
-    </header>
-
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10 text-center">
-                <h2 class="estadisticas-title"></h2>
-                <img src="../app/image/Frutas y Numeros.png" alt="Frutas con estadística" class="img-fluid rounded shadow">
-            </div>
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1>Inicio</h1>
+            <p class="text-muted">Bienvenido al sistema de Instructivos Productivos</p>
+            <p class="text-muted">Usuario: <strong><?= htmlspecialchars($_SESSION['Nombre'] ?? $_SESSION['Nom_Usuario']) ?></strong></p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/scripts.js"></script>
-</body>
-</html>
+    <!-- Imagen y Accesos rápidos en la misma fila -->
+    <div class="row align-items-center">
+        <!-- Imagen más pequeña -->
+        <div class="col-md-6 text-center">
+            <img src="image/Frutas y Numeros.png" alt="Frutas con estadística" class="img-fluid rounded shadow" style="max-height: 400px; width: auto;">
+        </div>
+
+        <!-- Accesos rápidos al costado -->
+        <div class="col-md-6">
+            <h3 class="mb-4">Accesos Rápidos</h3>
+            
+            <div class="d-grid gap-3">
+                <!-- Crear Instructivo -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span style="font-size: 2.5rem;">📋</span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1">Crear Instructivo</h5>
+                                <p class="card-text text-muted mb-2">Crea nuevos instructivos de proceso productivo</p>
+                                <a href="Procesos/instructivo.php" class="btn btn-primary btn-sm">Ir a Crear</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exportar -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span style="font-size: 2.5rem;">📊</span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1">Exportar</h5>
+                                <p class="card-text text-muted mb-2">Descarga instructivos en formato Excel</p>
+                                <a href="Procesos/exportar_instructivo.php" class="btn btn-success btn-sm">Descargar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span style="font-size: 2.5rem;">⚙️</span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1">Configuración</h5>
+                                <p class="card-text text-muted mb-2">Gestiona parámetros del sistema</p>
+                                <a href="Configuracion/calibre.php" class="btn btn-secondary btn-sm">Configurar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
@@ -6,14 +8,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ Configuración desde variables de entorno
 const config = {
-    user: 'sa',
-    password: 'Robin@2021',
-    server: '192.168.19.4',
-    database: 'SistGestion',
+    user: process.env.DB_USER || 'sa',
+    password: process.env.DB_PASSWORD || '',
+    server: process.env.DB_SERVER || '192.168.19.4',
+    database: process.env.DB_DATABASE || 'SistGestion',
     options: {
-        encrypt: false,
-        trustServerCertificate: true,
+        encrypt: process.env.NODE_DB_ENCRYPT === 'true' || false,
+        trustServerCertificate: process.env.NODE_DB_TRUST_CERT === 'true' || true,
     }
 };
 
@@ -137,7 +140,7 @@ app.get('/api/detalle', async (req, res) => {
 
 
 // 🟢 Iniciar servidor
-const PORT = 3003;
+const PORT = process.env.NODE_PORT || 3003;
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://192.168.19.4:${PORT}`);
+    console.log(`Servidor corriendo en http://${config.server}:${PORT}`);
 });
