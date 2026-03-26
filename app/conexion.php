@@ -1,7 +1,7 @@
 <?php
 
 
-$serverName = "192.168.19.4"; // Nombre del servidor y instancia
+$serverName =  // Nombre del servidor y instancia
 $connectionInfo = array( "Database"=>"SistGestion", "UID"=>"sa", "PWD"=>"Robin@2021",'CharacterSet'=>'UTF-8');
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 if( $conn ) {
