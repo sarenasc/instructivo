@@ -11,7 +11,7 @@ if( $conn ) {
     die( print_r( sqlsrv_errors(), true));
 }
 //coneccion para rescatar marcas
-$serverName = "192.168.19.4"; // Nombre del servidor y instancia
+$serverName =  // Nombre del servidor y instancia
 $connectionInfo = array( "Database"=>"Facturador_ASanta_Almahue", "UID"=>"sa", "PWD"=>"Robin@2021",'CharacterSet'=>'UTF-8');
 $conn2 = sqlsrv_connect( $serverName, $connectionInfo);
 if( $conn2 ) {
@@ -21,7 +21,7 @@ if( $conn2 ) {
     die( print_r( sqlsrv_errors(), true));
 }
 //coneccion a DW_Almahue
-$serverName = "192.168.19.4"; // Nombre del servidor y instancia
+$serverName =  // Nombre del servidor y instancia
 $connectionInfo = array( "Database"=>"DW_Almahue", "UID"=>"sa", "PWD"=>"Robin@2021",'CharacterSet'=>'UTF-8');
 $conn3 = sqlsrv_connect( $serverName, $connectionInfo);
 if( $conn3 ) {
