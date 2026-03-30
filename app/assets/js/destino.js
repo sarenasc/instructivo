@@ -38,10 +38,10 @@ function cargarTabla() {
                     <td>${item.nombre_destino}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarDestino(${item.id_destino}, '${item.codigo_destino}', '${item.nombre_destino}')">
-                            âœï¸ Editar
+                            Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarDestino(${item.id_destino})">
-                            ðŸ—‘ï¸ Eliminar
+                            Eliminar
                         </button>
                     </td>
                 `;

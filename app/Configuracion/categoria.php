@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GestiÃ³n de CategorÃ­as</title>
+    <title>Gestion de CategorÃ­as</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -18,17 +18,17 @@ if (!isset($_SESSION['id'])) {
     <?php include '../includes/header.php'; ?>
 
     <div class="container mt-4">
-        <h2 class="mb-4">GestiÃ³n de CategorÃ­as</h2>
+        <h2 class="mb-4">Gestion de Categori­as</h2>
         
         <form id="formCategoria" class="mb-4">
             <input type="hidden" id="id_categoria">
             <div class="row">
                 <div class="col-md-3">
-                    <label for="codigo_categoria" class="form-label">CÃ³digo CategorÃ­a</label>
+                    <label for="codigo_categoria" class="form-label">Codigo CategorÃ­a</label>
                     <input type="text" class="form-control" id="codigo_categoria" name="codigo_categoria" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="nombre_categoria" class="form-label">Nombre CategorÃ­a</label>
+                    <label for="nombre_categoria" class="form-label">Nombre Categori­a</label>
                     <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required>
                 </div>
                 <div class="col-md-3">
@@ -58,7 +58,7 @@ if (!isset($_SESSION['id'])) {
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>CÃ³digo</th>
+                        <th>Codigo</th>
                         <th>Nombre</th>
                         <th>Especie</th>
                         <th>Exportadora</th>

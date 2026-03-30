@@ -74,10 +74,10 @@ function cargarTabla() {
                     <td>${item.nombre_exportadora || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarCategoria(${item.id_categoria}, '${item.codigo_categoria}', '${item.nombre_categoria}', '${item.id_especie || ''}', '${item.id_exportadora || ''}')">
-                            âœï¸ Editar
+                            Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarCategoria(${item.id_categoria})">
-                            ðŸ—‘ï¸ Eliminar
+                            Eliminar
                         </button>
                     </td>
                 `;

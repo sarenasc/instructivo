@@ -12,6 +12,8 @@
 *.pem
 *.crt
 conexion.php
+.claude/
+
 
 # -------------------------------------------
 # Dependencias

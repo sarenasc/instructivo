@@ -56,10 +56,10 @@ function cargarTabla() {
                     <td>${calibre.especie || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarCalibre(${calibre.id}, '${calibre.cod_calibre}', '${calibre.nombre_calibre}', '${calibre.id_especie || ''}')">
-                            âœï¸ Editar
+                            Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarCalibre(${calibre.id})">
-                            ðŸ—‘ï¸ Eliminar
+                            Eliminar
                         </button>
                     </td>
                 `;
@@ -83,7 +83,7 @@ function enviarFormulario(accion) {
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("Ã©xito") || data.includes("correctamente")) {
+        if (data.includes("Exito") || data.includes("correctamente")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -99,7 +99,7 @@ function cargarCalibre(id, codigo, nombre, id_especie) {
 }
 
 function eliminarCalibre(id) {
-    if (confirm("Â¿EstÃ¡ seguro de eliminar este calibre?")) {
+    if (confirm("Esta seguro de eliminar este calibre?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_calibre", id);
