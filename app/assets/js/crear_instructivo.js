@@ -169,31 +169,31 @@ function cargarEmbalajes(id_exportadora, id_especie) {
             // Configurar evento DESPUÉS de cargar los datos
             newSelect.addEventListener('change', () => {
                 const id_embalaje = newSelect.value;
-                //console.log('📏 Cambiando embalaje, id_embalaje:', id_embalaje);
+                console.log('📏 Cambiando embalaje, id_embalaje:', id_embalaje);
                 
                 if (id_embalaje) {
                     const alturaUrl = `../models/obtener_altura_pallet.php?id_embalaje=${id_embalaje}`;
-                    //console.log('🔗 Fetch URL:', alturaUrl);
+                    console.log('🔗 Fetch URL:', alturaUrl);
                     
                     fetch(alturaUrl)
                         .then(response => {
-                            //console.log('📡 Response status:', response.status);
+                            console.log('📡 Response status:', response.status);
                             return response.json();
                         })
                         .then(data => {
-                            //console.log('💾 Data recibida:', data);
+                            console.log('💾 Data recibida:', data);
                             const alturaSelect = document.getElementById('detalle_altura');
                             alturaSelect.innerHTML = '<option value="">Seleccione...</option>';
                             
                             if (Array.isArray(data) && data.length > 0) {
                                 data.forEach(alt => {
                                     const texto = `${alt.altura} cm - ${alt.cajas} cajas`;
-                                    //console.log('✅ Agregando opción:', texto);
+                                    console.log('✅ Agregando opción:', texto);
                                     alturaSelect.innerHTML += `<option value="${alt.id}">${texto}</option>`;
                                 });
-                                //console.log('🎉 Alturas cargadas:', data.length);
+                                console.log('🎉 Alturas cargadas:', data.length);
                             } else {
-                                //console.log('⚠️ No hay alturas disponibles para este embalaje');
+                                console.log('⚠️ No hay alturas disponibles para este embalaje');
                                 alturaSelect.innerHTML += '<option value="">Sin alturas disponibles</option>';
                             }
                         })
@@ -205,7 +205,7 @@ function cargarEmbalajes(id_exportadora, id_especie) {
                 }
             });
             
-            //console.log('✅ Evento change configurado para embalaje');
+            console.log('✅ Evento change configurado para embalaje');
         })
         .catch(error => console.error('Error cargando embalajes:', error));
 }
@@ -710,8 +710,9 @@ function configurarEventos() {
         btnConfirmarGuardar.addEventListener('click', guardarInstructivo);
     }
     
-    //console.log('✅ Eventos configurados');
-    //console.log('📋 Botones encontrados:', {
+    console.log('✅ Eventos configurados');
+    console.log('📋 Botones encontrados:', 
+        {
         btnAgregarPedido: !!btnAgregarPedido,
         btnAgregarDetalle: !!btnAgregarDetalle,
         btnGuardarInstructivo: !!btnGuardarInstructivo,
