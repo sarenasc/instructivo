@@ -273,7 +273,7 @@ require_once '../includes/header.php';
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label">Cantidad *</label>
-                                <input type="number" class="form-control" id="edit_cantidad_detalle" required>
+                                <input type="number" class="form-control" id="edit_cantidad_detalle">
                             </div>
                             <div class="col-md-5">
                                 <label class="form-label">Observación</label>

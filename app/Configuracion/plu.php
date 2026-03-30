@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GestiÃ³n de PLU</title>
+    <title>Gestion de PLU</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -18,13 +18,13 @@ if (!isset($_SESSION['id'])) {
     <?php include '../includes/header.php'; ?>
 
     <div class="container mt-4">
-        <h2 class="mb-4">GestiÃ³n de PLU</h2>
+        <h2 class="mb-4">Gestion de PLU</h2>
         
         <form id="formPlu" class="mb-4">
             <input type="hidden" id="id_plu">
             <div class="row">
                 <div class="col-md-3">
-                    <label for="codigo_plu" class="form-label">CÃ³digo PLU</label>
+                    <label for="codigo_plu" class="form-label">Codigo PLU</label>
                     <input type="text" class="form-control" id="codigo_plu" name="codigo_plu" required>
                 </div>
                 <div class="col-md-5">
@@ -52,7 +52,7 @@ if (!isset($_SESSION['id'])) {
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>CÃ³digo</th>
+                        <th>Codigo</th>
                         <th>Nombre</th>
                         <th>Especie</th>
                         <th>Acciones</th>

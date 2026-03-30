@@ -20,32 +20,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function guardar($conn) {
-    $codigo = $_POST['codigo_embalaje'] ?? '';
-    $nombre = $_POST['nombre_embalaje'] ?? '';
-    $peso = $_POST['peso_embalaje'] ?? null;
-    $id_etiqueta = $_POST['etiqueta'] ?? null;
-    $id_especie = $_POST['especie'] ?? null;
-    $id_exportadora = $_POST['exportadora'] ?? null;
-    
+    $codigo        = $_POST['codigo_embalaje'] ?? '';
+    $nombre        = $_POST['nombre_embalaje'] ?? '';
+    $peso          = $_POST['peso_embalaje']   ?? null;
+    $id_etiqueta   = $_POST['etiqueta']        ?? null;
+    $id_especie    = $_POST['especie']          ?? null;
+    $id_exportadora= $_POST['exportadora']     ?? null;
+
     if (empty($codigo) || empty($nombre)) {
-        echo "Error: CÃ³digo y descripciÃ³n son obligatorios";
+        echo "Error: Código y descripción son obligatorios";
         return;
     }
-    
-    $checkSql = "SELECT COUNT(*) as total FROM inst_embalaje WHERE codigo_embalaje = ?";
-    $checkStmt = sqlsrv_prepare($conn, $checkSql);
-    sqlsrv_execute($checkStmt, [$codigo]);
-    $checkRow = sqlsrv_fetch_array($checkStmt, SQLSRV_FETCH_ASSOC);
-    
-    if ($checkRow['total'] > 0) {
-        echo "Error: Ya existe un embalaje con ese cÃ³digo";
+
+    $checkRow = sqlsrv_fetch_array(
+        sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM inst_embalaje WHERE Codigo_emb = ?", [$codigo]),
+        SQLSRV_FETCH_ASSOC
+    );
+    if ($checkRow && $checkRow['total'] > 0) {
+        echo "Error: Ya existe un embalaje con ese código";
         return;
     }
-    
-    $sql = "INSERT INTO inst_embalaje (codigo_embalaje, nombre_embalaje, peso_embalaje, id_etiqueta, id_especie, id_exportadora) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = sqlsrv_prepare($conn, $sql);
-    
-    if (sqlsrv_execute($stmt, [$codigo, $nombre, $peso, $id_etiqueta, $id_especie, $id_exportadora])) {
+
+    $stmt = sqlsrv_query($conn,
+        "INSERT INTO inst_embalaje (Codigo_emb, Descripcion_Embalaje, Peso_Embalaje, id_etiqueta, id_especie, id_exportadora)
+         VALUES (?, ?, ?, ?, ?, ?)",
+        [$codigo, $nombre, $peso, $id_etiqueta, $id_especie, $id_exportadora]
+    );
+
+    if ($stmt) {
         echo "Embalaje guardado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -54,23 +56,28 @@ function guardar($conn) {
 }
 
 function modificar($conn) {
-    $id = $_POST['id_embalaje'] ?? null;
-    $codigo = $_POST['codigo_embalaje'] ?? '';
-    $nombre = $_POST['nombre_embalaje'] ?? '';
-    $peso = $_POST['peso_embalaje'] ?? null;
-    $id_etiqueta = $_POST['etiqueta'] ?? null;
-    $id_especie = $_POST['especie'] ?? null;
-    $id_exportadora = $_POST['exportadora'] ?? null;
-    
+    $id            = $_POST['id_embalaje']     ?? null;
+    $codigo        = $_POST['codigo_embalaje'] ?? '';
+    $nombre        = $_POST['nombre_embalaje'] ?? '';
+    $peso          = $_POST['peso_embalaje']   ?? null;
+    $id_etiqueta   = $_POST['etiqueta']        ?? null;
+    $id_especie    = $_POST['especie']          ?? null;
+    $id_exportadora= $_POST['exportadora']     ?? null;
+
     if (empty($id) || empty($codigo) || empty($nombre)) {
         echo "Error: Datos incompletos";
         return;
     }
-    
-    $sql = "UPDATE inst_embalaje SET codigo_embalaje = ?, nombre_embalaje = ?, peso_embalaje = ?, id_etiqueta = ?, id_especie = ?, id_exportadora = ? WHERE id_embalaje = ?";
-    $stmt = sqlsrv_prepare($conn, $sql);
-    
-    if (sqlsrv_execute($stmt, [$codigo, $nombre, $peso, $id_etiqueta, $id_especie, $id_exportadora, $id])) {
+
+    $stmt = sqlsrv_query($conn,
+        "UPDATE inst_embalaje
+         SET Codigo_emb = ?, Descripcion_Embalaje = ?, Peso_Embalaje = ?,
+             id_etiqueta = ?, id_especie = ?, id_exportadora = ?
+         WHERE id = ?",
+        [$codigo, $nombre, $peso, $id_etiqueta, $id_especie, $id_exportadora, $id]
+    );
+
+    if ($stmt) {
         echo "Embalaje modificado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -80,16 +87,18 @@ function modificar($conn) {
 
 function eliminar($conn) {
     $id = $_POST['id_embalaje'] ?? null;
-    
+
     if (empty($id)) {
-        echo "Error: ID no vÃ¡lido";
+        echo "Error: ID no válido";
         return;
     }
-    
-    $sql = "DELETE FROM inst_embalaje WHERE id_embalaje = ?";
-    $stmt = sqlsrv_prepare($conn, $sql);
-    
-    if (sqlsrv_execute($stmt, [$id])) {
+
+    $stmt = sqlsrv_query($conn,
+        "DELETE FROM inst_embalaje WHERE id = ?",
+        [$id]
+    );
+
+    if ($stmt) {
         echo "Embalaje eliminado correctamente";
     } else {
         $errores = sqlsrv_errors();

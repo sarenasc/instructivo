@@ -3,6 +3,8 @@ require_once("../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
+
+    print_r ($accion);
     
     switch ($accion) {
         case 'guardar':
@@ -51,14 +53,17 @@ function modificar($conn) {
     $id = $_POST['id_destino'] ?? null;
     $codigo = $_POST['codigo_destino'] ?? '';
     $nombre = $_POST['nombre_destino'] ?? '';
+
+    print $id;
+    print $codigo;
+    print $nombre;
     
     if (empty($id) || empty($codigo) || empty($nombre)) {
         echo "Error: Datos incompletos";
         return;
     }
     
-    $sql = "UPDATE inst_destino SET codigo_destino = '$codigo', nombre_destino = '$nombre' WHERE id_destino = $id";
-    
+    $sql = "UPDATE inst_destino SET cod_destino = '$codigo', nombre_destino = '$nombre' WHERE id = $id";
     if (sqlsrv_query($conn, $sql)) {
         echo "Destino modificado correctamente";
     } else {

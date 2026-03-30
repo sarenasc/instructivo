@@ -72,7 +72,7 @@ function limpiarFormulario() {
     const cajasValor = cajas.value;
 
     // Validar que los valores no sean vacÃ­os si es necesario
-    console.log("Datos a enviar:", { id, id_embalaje, alturaValor, cajasValor });
+    //console.log("Datos a enviar:", { id, id_embalaje, alturaValor, cajasValor });
 
     fetch("../controllers/guardar_altura_pallet.php", {
         method: "POST",

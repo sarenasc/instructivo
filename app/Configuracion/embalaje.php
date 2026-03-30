@@ -1,10 +1,10 @@
 ﻿<?php
-$titulo_pagina = 'GestiÃ³n de Embalajes';
+$titulo_pagina = 'Gestion de Embalajes';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container mt-5">
-    <h2 class="mb-4">GestiÃ³n de Embalajes</h2>
+    <h2 class="mb-4">Gestion de Embalajes</h2>
     
     <!-- Formulario -->
     <div class="card mb-4">
@@ -13,11 +13,11 @@ require_once __DIR__ . '/../includes/header.php';
             <form id="formEmbalaje">
                 <input type="hidden" id="id_embalaje" name="id_embalaje">
                 <div class="mb-3">
-                    <label for="codigo_embalaje" class="form-label">CÃ³digo Embalaje</label>
+                    <label for="codigo_embalaje" class="form-label">Codigo Embalaje</label>
                     <input type="text" class="form-control" id="codigo_embalaje" name="codigo_embalaje" required>
                 </div>
                 <div class="mb-3">
-                    <label for="nombre_embalaje" class="form-label">DescripciÃ³n Embalaje</label>
+                    <label for="nombre_embalaje" class="form-label">Descripcion Embalaje</label>
                     <input type="text" class="form-control" id="nombre_embalaje" name="nombre_embalaje" required>
                 </div>
                 <div class="mb-3">
@@ -61,8 +61,8 @@ require_once __DIR__ . '/../includes/header.php';
                     <thead class="table-light">
                         <tr>
                             <th>ID</th>
-                            <th>CÃ³digo</th>
-                            <th>DescripciÃ³n</th>
+                            <th>Codigo</th>
+                            <th>Descripcion</th>
                             <th>Peso</th>
                             <th>Etiqueta</th>
                             <th>Especie</th>

@@ -6,24 +6,39 @@ header('Content-Type: application/json');
 $id_especie = $_GET['id_especie'] ?? null;
 $id_exportadora = $_GET['id_exportadora'] ?? null;
 
-$sql = "SELECT id, Codigo_emb as codigo_embalaje, Descripcion_Embalaje as nombre_embalaje, Peso_Embalaje as peso_embalaje, id_etiqueta, id_especie, id_exportadora, tipo, sellado 
-        FROM inst_embalaje";
+$sql = "SELECT e.id,
+               e.Codigo_emb         AS codigo_embalaje,
+               e.Descripcion_Embalaje AS nombre_embalaje,
+               e.Peso_Embalaje      AS peso_embalaje,
+               e.id_etiqueta,
+               e.id_especie,
+               e.id_exportadora,
+               et.Nombre_etiqueta   AS nombre_etiqueta,
+               es.especie,
+               ex.Nombre_Exportadora
+        FROM inst_embalaje e
+        LEFT JOIN inst_etiqueta   et ON et.id        = e.id_etiqueta
+        LEFT JOIN especie          es ON es.id_especie = e.id_especie
+        LEFT JOIN inst_exportadora ex ON ex.id        = e.id_exportadora";
 
 $conditions = [];
+$params = [];
 if ($id_especie) {
-    $conditions[] = "id_especie = $id_especie";
+    $conditions[] = "e.id_especie = ?";
+    $params[] = $id_especie;
 }
 if ($id_exportadora) {
-    $conditions[] = "id_exportadora = $id_exportadora";
+    $conditions[] = "e.id_exportadora = ?";
+    $params[] = $id_exportadora;
 }
 
 if (count($conditions) > 0) {
     $sql .= " WHERE " . implode(" AND ", $conditions);
 }
 
-$sql .= " ORDER BY Codigo_emb";
+$sql .= " ORDER BY e.Codigo_emb";
 
-$stmt = sqlsrv_query($conn, $sql);
+$stmt = sqlsrv_query($conn, $sql, count($params) ? $params : []);
 
 $resultados = [];
 if ($stmt) {

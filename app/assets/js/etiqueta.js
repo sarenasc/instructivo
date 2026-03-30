@@ -27,7 +27,7 @@ function cargarExportadora() {
             select.innerHTML = '<option value="">Seleccione una exportadora</option>';
             data.forEach(exportadora => {
                 let option = document.createElement("option");
-                option.value = exportadora.id_exportadora;
+                option.value = exportadora.id;
                 option.textContent = exportadora.nombre_exportadora;
                 select.appendChild(option);
             });
@@ -50,16 +50,16 @@ function cargarTabla() {
             data.forEach(item => {
                 let row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${item.id_etiqueta}</td>
+                    <td>${item.id}</td>
                     <td>${item.codigo_etiqueta}</td>
                     <td>${item.nombre_etiqueta}</td>
                     <td>${item.nombre_exportadora || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarEtiqueta(${item.id_etiqueta}, '${item.codigo_etiqueta}', '${item.nombre_etiqueta}', '${item.id_exportadora || ''}')">
-                            âœï¸ Editar
+                        <button class="btn btn-sm btn-warning" onclick="cargarEtiqueta(${item.id}, '${item.codigo_etiqueta}', '${item.nombre_etiqueta}', '${item.id_exportadora || ''}')">
+                            Editar
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarEtiqueta(${item.id_etiqueta})">
-                            ðŸ—‘ï¸ Eliminar
+                        <button class="btn btn-sm btn-danger" onclick="eliminarEtiqueta(${item.id})">
+                            Eliminar
                         </button>
                     </td>
                 `;

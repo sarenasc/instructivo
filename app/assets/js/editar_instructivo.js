@@ -19,7 +19,7 @@ function obtenerColorCalibre(index) {
 
 // ===== CARGA INICIAL =====
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Cargando página de editar instructivo...');
+    //console.log('🚀 Cargando página de editar instructivo...');
     cargarCombosIniciales();
 });
 
@@ -234,11 +234,15 @@ async function cargarFiltrosPorEspecie() {
     const respEmb = await fetch(`../models/obtener_embalajes.php?id_especie=${idEspecie}&id_exportadora=${idExportadora || ''}`);
     const embalajes = await respEmb.json();
     const selectEmb = document.getElementById('edit_embalaje');
+    //console.log('📋 Embalaje cargados:', embalajes);
     selectEmb.innerHTML = '<option value="">Seleccione...</option>';
+    
     embalajes.forEach(emb => {
         const opt = document.createElement('option');
         opt.value = emb.id;
         opt.textContent = emb.codigo_embalaje + ' - ' + emb.nombre_embalaje;
+        opt.dataset.codigo = emb.codigo_embalaje || '';
+        opt.dataset.nombre = emb.nombre_embalaje || '';
         selectEmb.appendChild(opt);
     });
     
@@ -264,14 +268,14 @@ async function cargarFiltrosPorExportadora() {
     // Categoría
     const respCat = await fetch(`../models/obtener_categoria.php?id_especie=${idEspecie || ''}&id_exportadora=${idExportadora || ''}`);
     const categorias = await respCat.json();
-    console.log('📋 Categorías cargadas:', categorias);
+   
     const selectCat = document.getElementById('edit_categoria');
     selectCat.innerHTML = '<option value="">Seleccione...</option>';
     categorias.forEach(cat => {
         const opt = document.createElement('option');
         opt.value = cat.id;
-        const texto = cat.nombre_categoria || cat.cod_categoria || 'Sin nombre';
-        opt.textContent = cat.cod_categoria + ' - ' + texto;
+        const texto = cat.nombre_categoria || cat.codigo_categoria || 'Sin nombre';
+        opt.textContent = cat.codigo_categoria + ' - ' + texto;
         selectCat.appendChild(opt);
     });
     
@@ -328,7 +332,7 @@ async function cargarAlturaPalletEnModal(idEmbalajeSeleccionado, idAlturaSelecci
     
     const resp = await fetch(`../models/obtener_altura_pallet.php?id_embalaje=${idEmbalajeSeleccionado}`);
     const alturas = await resp.json();
-    console.log('📏 Alturas cargadas para embalaje', idEmbalajeSeleccionado, ':', alturas);
+    //console.log('📏 Alturas cargadas para embalaje', idEmbalajeSeleccionado, ':', alturas);
     
     const selectAlt = document.getElementById('edit_detalle_altura');
     selectAlt.innerHTML = '<option value="">Seleccione...</option>';
@@ -342,7 +346,7 @@ async function cargarAlturaPalletEnModal(idEmbalajeSeleccionado, idAlturaSelecci
     // Seleccionar la altura guardada (inmediatamente después de cargar las opciones)
     if (idAlturaSeleccionada) {
         selectAlt.value = idAlturaSeleccionada;
-        console.log('📏 Altura seleccionada:', idAlturaSeleccionada, 'Valor actual:', selectAlt.value);
+        //console.log('📏 Altura seleccionada:', idAlturaSeleccionada, 'Valor actual:', selectAlt.value);
     }
 }
 
@@ -454,7 +458,9 @@ function agregarDetalle() {
         cantidad: parseInt(cantidad),
         calibres: calibresSeleccionados,
         id_embalaje: parseInt(embalajeSelect.value) || null,
-        embalaje_text: embalajeSelect.options[embalajeSelect.selectedIndex]?.text || '',
+        embalaje_codigo: embalajeSelect.options[embalajeSelect.selectedIndex]?.dataset.codigo || '',
+        embalaje_nombre: embalajeSelect.options[embalajeSelect.selectedIndex]?.dataset.nombre || '',
+        embalaje_text: embalajeSelect.options[embalajeSelect.selectedIndex]?.text || '',      
         id_categoria: parseInt(categoriaSelect.value) || null,
         categoria_text: categoriaSelect.options[categoriaSelect.selectedIndex]?.text || '',
         id_plu: parseInt(pluSelect.value) || null,
@@ -490,7 +496,7 @@ function renderDetalleEdit() {
         const row = tbody.insertRow();
         
         // Debug: Verificar categoría
-        console.log(`📋 Detalle ${index}: categoria_text="${det.categoria_text}", id_categoria=${det.id_categoria}`);
+        ////console.log(`📋 Detalle ${index}: categoria_text="${det.embalaje_codigo}", id_categoria=${det.id_categoria}`);
         
         let calibresHTML = '<div style="display: flex; gap: 4px; flex-wrap: wrap;">';
         det.calibres.forEach((calibre, i) => {
@@ -674,13 +680,13 @@ function guardarEdicionPedido() {
 async function abrirModalEditarDetalle(index) {
     const det = detalleEdit[index];
     
-    console.log('🔍 Editando detalle index', index, ':', det);
-    console.log('📦 id_embalaje:', det.id_embalaje);
-    console.log('📏 altura_pallet:', det.altura_pallet);
-    console.log('📋 id_categoria:', det.id_categoria, 'categoria_text:', det.categoria_text);
-    console.log('🏷️ id_etiqueta:', det.id_etiqueta, 'etiqueta_text:', det.etiqueta_text);
-    console.log('🏷️ id_plu:', det.id_plu, 'plu_text:', det.plu_text);
-    console.log('📦 id_pallet:', det.id_pallet, 'pallet_text:', det.pallet_text);
+    //console.log('🔍 Editando detalle index', index, ':', det);
+    //console.log('📦 id_embalaje:', det.id_embalaje);
+    //console.log('📏 altura_pallet:', det.altura_pallet);
+    //console.log('📋 id_categoria:', det.id_categoria, 'categoria_text:', det.categoria_text);
+    //console.log('🏷️ id_etiqueta:', det.id_etiqueta, 'etiqueta_text:', det.etiqueta_text);
+    //console.log('🏷️ id_plu:', det.id_plu, 'plu_text:', det.plu_text);
+    //console.log('📦 id_pallet:', det.id_pallet, 'pallet_text:', det.pallet_text);
     
     document.getElementById('edit_detalle_index').value = index;
     document.getElementById('edit_detalle_cantidad').value = det.cantidad;
@@ -689,7 +695,7 @@ async function abrirModalEditarDetalle(index) {
     
     // Cargar combos si están vacíos
     if (document.getElementById('edit_detalle_embalaje').options.length <= 1) {
-        console.log('🔄 Cargando combos...');
+        //console.log('🔄 Cargando combos...');
         await cargarCombosEdicionDetalle();
     }
     
@@ -700,11 +706,18 @@ async function abrirModalEditarDetalle(index) {
     setTimeout(async () => {
         // Número de pedido
         const selectPedido = document.getElementById('edit_detalle_numero_pedido');
-        if (det.numero_pedido) {
-            const optionExistente = Array.from(selectPedido.options).find(opt => opt.value === det.numero_pedido);
+        const numeroPedidoActual = String(det.numero_pedido ?? '').trim();
+
+        if (numeroPedidoActual) {
+            const optionExistente = Array.from(selectPedido.options).find(
+                opt => String(opt.value).trim() === numeroPedidoActual);
+                //console.log('🔢 Número pedido seleccionado:', numeroPedidoActual, 'valor final:', selectPedido.value);
+
             if (optionExistente) {
-                selectPedido.value = det.numero_pedido;
-                console.log('🔢 Número pedido seleccionado:', det.numero_pedido);
+                selectPedido.value = numeroPedidoActual;
+                //console.log('🔢 Número pedido seleccionado:', numeroPedidoActual);
+            } else {
+                //console.log('⚠️ No se encontró opción para número de pedido:', numeroPedidoActual);
             }
         }
         
@@ -712,12 +725,12 @@ async function abrirModalEditarDetalle(index) {
         if (det.id_embalaje) {
             const embalajeSelect = document.getElementById('edit_detalle_embalaje');
             embalajeSelect.value = det.id_embalaje;
-            console.log('📦 Embalaje seleccionado:', det.id_embalaje, 'Texto:', embalajeSelect.options[embalajeSelect.selectedIndex]?.text);
+            //console.log('📦 Embalaje seleccionado:', det.id_embalaje, 'Texto:', embalajeSelect.options[embalajeSelect.selectedIndex]?.text);
         }
         
         // Cargar alturas DESPUÉS de seleccionar embalaje
         if (det.id_embalaje) {
-            console.log('📏 Cargando alturas para embalaje', det.id_embalaje);
+            //console.log('📏 Cargando alturas para embalaje', det.id_embalaje);
             await cargarAlturaPalletEnModal(det.id_embalaje, det.altura_pallet);
         }
         
@@ -725,27 +738,27 @@ async function abrirModalEditarDetalle(index) {
         if (det.id_categoria) {
             const catSelect = document.getElementById('edit_detalle_categoria');
             catSelect.value = det.id_categoria;
-            console.log('📋 Categoría seleccionada:', det.id_categoria, 'Texto:', catSelect.options[catSelect.selectedIndex]?.text);
+            //console.log('📋 Categoría seleccionada:', det.id_categoria, 'Texto:', catSelect.options[catSelect.selectedIndex]?.text);
         }
         if (det.id_plu) {
             const pluSelect = document.getElementById('edit_detalle_plu');
             pluSelect.value = det.id_plu;
-            console.log('🏷️ PLU seleccionado:', det.id_plu, 'Texto:', pluSelect.options[pluSelect.selectedIndex]?.text);
+            //console.log('🏷️ PLU seleccionado:', det.id_plu, 'Texto:', pluSelect.options[pluSelect.selectedIndex]?.text);
         }
         if (det.id_etiqueta) {
             const etqSelect = document.getElementById('edit_detalle_etiqueta');
             etqSelect.value = det.id_etiqueta;
-            console.log('🏷️ Etiqueta seleccionada:', det.id_etiqueta, 'Texto:', etqSelect.options[etqSelect.selectedIndex]?.text);
+            //console.log('🏷️ Etiqueta seleccionada:', det.id_etiqueta, 'Texto:', etqSelect.options[etqSelect.selectedIndex]?.text);
         }
         if (det.id_pallet) {
             const palSelect = document.getElementById('edit_detalle_pallet');
             palSelect.value = det.id_pallet;
-            console.log('📦 Pallet seleccionado:', det.id_pallet, 'Texto:', palSelect.options[palSelect.selectedIndex]?.text);
+            //console.log('📦 Pallet seleccionado:', det.id_pallet, 'Texto:', palSelect.options[palSelect.selectedIndex]?.text);
         }
         if (det.id_destino) {
             const destSelect = document.getElementById('edit_detalle_destino');
             destSelect.value = det.id_destino;
-            console.log('📍 Destino seleccionado:', det.id_destino, 'Texto:', destSelect.options[destSelect.selectedIndex]?.text);
+            //console.log('📍 Destino seleccionado:', det.id_destino, 'Texto:', destSelect.options[destSelect.selectedIndex]?.text);
         }
         
         // Seleccionar calibres
@@ -753,7 +766,7 @@ async function abrirModalEditarDetalle(index) {
         Array.from(calibresSelect.options).forEach(opt => {
             opt.selected = det.calibres.some(c => c.id == opt.value);
         });
-        console.log('🎯 Calibres seleccionados:', det.calibres);
+        //console.log('🎯 Calibres seleccionados:', det.calibres);
     }, 150);
     
     const modal = new bootstrap.Modal(document.getElementById('modalEditarDetalle'));
@@ -770,8 +783,8 @@ async function cargarPedidosEnSelect() {
     
     pedidosUnicos.forEach(numero => {
         const opt = document.createElement('option');
-        opt.value = numero;
-        opt.textContent = numero;
+        opt.value = String(numero).trim();
+        opt.textContent = String(numero).trim();
         selectPedido.appendChild(opt);
     });
 }
@@ -783,27 +796,30 @@ async function cargarCombosEdicionDetalle() {
     // Embalaje
     const respEmb = await fetch(`../models/obtener_embalajes.php?id_especie=${idEspecie || ''}&id_exportadora=${idExportadora || ''}`);
     const embalajes = await respEmb.json();
+     
     const selectEmb = document.getElementById('edit_detalle_embalaje');
     selectEmb.innerHTML = '<option value="">Seleccione...</option>';
     embalajes.forEach(emb => {
         const opt = document.createElement('option');
         opt.value = emb.id;
         opt.textContent = emb.codigo_embalaje + ' - ' + emb.nombre_embalaje;
+        opt.dataset.codigo = emb.codigo_embalaje || '';
+        opt.dataset.nombre = emb.nombre_embalaje || '';
         selectEmb.appendChild(opt);
     });
     
     // Categoría
     const respCat = await fetch(`../models/obtener_categoria.php?id_especie=${idEspecie || ''}&id_exportadora=${idExportadora || ''}`);
     const categorias = await respCat.json();
-    console.log('📋 Categorías cargadas:', categorias);
+    //console.log('📋 Categorías cargadas:', categorias);
     const selectCat = document.getElementById('edit_detalle_categoria');
     selectCat.innerHTML = '<option value="">Seleccione...</option>';
     categorias.forEach(cat => {
         const opt = document.createElement('option');
         opt.value = cat.id;
         // Usar nombre_categoria o cod_categoria como fallback
-        const texto = cat.nombre_categoria || cat.cod_categoria || 'Sin nombre';
-        opt.textContent = cat.cod_categoria + ' - ' + texto;
+        const texto = cat.nombre_categoria || cat.codigo_categoria || 'Sin nombre';
+        opt.textContent = cat.codigo_categoria + ' - ' + texto;
         selectCat.appendChild(opt);
     });
     
@@ -890,6 +906,8 @@ function guardarEdicionDetalle() {
         cantidad: parseInt(document.getElementById('edit_detalle_cantidad').value),
         calibres: calibresSeleccionados,
         id_embalaje: parseInt(embalajeSelect.value) || null,
+        embalaje_codigo: embalajeSelect.options[embalajeSelect.selectedIndex]?.dataset.codigo || '',
+        embalaje_nombre: embalajeSelect.options[embalajeSelect.selectedIndex]?.dataset.nombre || '',
         embalaje_text: embalajeSelect.options[embalajeSelect.selectedIndex]?.text || '',
         id_categoria: parseInt(categoriaSelect.value) || null,
         categoria_text: categoriaSelect.options[categoriaSelect.selectedIndex]?.text || '',
@@ -974,7 +992,7 @@ function abrirModalPantallaCompleta() {
         row.innerHTML = `
             <td><strong>${det.numero_pedido}</strong></td>
             <td>${det.variedad_etiquetada || '-'}</td>
-            <td>${det.embalaje_text}</td>
+            <td>${det.embalaje_codigo ? `${det.embalaje_codigo} - ${det.embalaje_nombre}` : (det.embalaje_text || '-')}</td>
             <td>${det.etiqueta_text}</td>
             <td>${calibresHTML}</td>
             <td>${det.categoria_text}</td>

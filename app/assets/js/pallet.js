@@ -27,7 +27,7 @@ function cargarExportadora() {
             select.innerHTML = '<option value="">Seleccione una exportadora</option>';
             data.forEach(exportadora => {
                 let option = document.createElement("option");
-                option.value = exportadora.id_exportadora;
+                option.value = exportadora.id;
                 option.textContent = exportadora.nombre_exportadora;
                 select.appendChild(option);
             });
@@ -50,16 +50,16 @@ function cargarTabla() {
             data.forEach(item => {
                 let row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${item.id_pallet}</td>
+                    <td>${item.id}</td>
                     <td>${item.cod_pallet}</td>
                     <td>${item.descrip_pallet}</td>
                     <td>${item.nombre_exportadora || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarPallet(${item.id_pallet}, '${item.cod_pallet}', '${item.descrip_pallet}', '${item.id_exportadora || ''}')">
-                            âœï¸ Editar
+                        <button class="btn btn-sm btn-warning" onclick="cargarPallet(${item.id}, '${item.cod_pallet}', '${item.descrip_pallet}', '${item.id_exportadora || ''}')">
+                                Editar
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarPallet(${item.id_pallet})">
-                            ðŸ—‘ï¸ Eliminar
+                        <button class="btn btn-sm btn-danger" onclick="eliminarPallet(${item.id})">
+                                Eliminar
                         </button>
                     </td>
                 `;
@@ -99,7 +99,7 @@ function cargarPallet(id, codigo, descripcion, id_exportadora) {
 }
 
 function eliminarPallet(id) {
-    if (confirm("Â¿EstÃ¡ seguro de eliminar este pallet?")) {
+    if (confirm("¿Esta seguro de eliminar este pallet?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_pallet", id);

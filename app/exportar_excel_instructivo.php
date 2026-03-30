@@ -248,7 +248,7 @@ $sheet->mergeCells('A1:P1')->setCellValue('A1', 'INSTRUCTIVO PLANTA ALMAHUE ');
 $sheet->setCellValue('A3', 'Exportadora: ');
 $sheet->setCellValue('B3', $cabecera['nombre_exportadora']);
 $sheet->setCellValue('A4', 'Fecha: ');
-$sheet->setCellValue('B4',$cabecera['fecha']->format('d-m-Y'));
+$sheet->setCellValue('B4', (new DateTime($cabecera['fecha']))->format('d-m-Y'));
 $sheet->setCellValue('A5', 'Especie: ');
 $sheet->setCellValue('B5', $cabecera['nombre_especie']);
 $sheet->setCellValue('A6', 'Variedad Real: ' );

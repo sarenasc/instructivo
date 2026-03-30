@@ -1,22 +1,22 @@
 ﻿let instructivos = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log('🚀 Cargando página de exportar instructivo...');
+  //console.log('🚀 Cargando página de exportar instructivo...');
   
   // Cargar instructivos con exportadora y fecha
   fetch('../models/obtener_instructivos.php')
     .then(res => {
-      console.log('📡 Response status:', res.status);
+      //console.log('📡 Response status:', res.status);
       return res.json();
     })
     .then(data => {
-      console.log('💾 Instructivos recibidos:', data.length);
+      //console.log('💾 Instructivos recibidos:', data.length);
       instructivos = data;
       const select = document.getElementById('selectInstructivo');
       select.innerHTML = '<option value="">Seleccione...</option>';
       
       if (data.length === 0) {
-        console.log('⚠️ No hay instructivos disponibles');
+        //console.log('⚠️ No hay instructivos disponibles');
         select.innerHTML += '<option value="">Sin instructivos</option>';
         return;
       }
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectInstructivo = document.getElementById('selectInstructivo');
   if (selectInstructivo) {
     selectInstructivo.addEventListener('change', () => {
-      console.log('🔄 Cambio de instructivo, cargando versiones...');
+      //console.log('🔄 Cambio de instructivo, cargando versiones...');
       cargarVersiones();
     });
   }
@@ -47,10 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function cargarVersiones() {
   const id = document.getElementById('selectInstructivo').value;
-  console.log('📋 Cargando versiones para instructivo:', id);
+  //console.log('📋 Cargando versiones para instructivo:', id);
   
   if (!id) {
-    console.log('⚠️ No hay instructivo seleccionado');
+    //console.log('⚠️ No hay instructivo seleccionado');
     const select = document.getElementById('selectVersion');
     select.innerHTML = '<option value="">Primero seleccione instructivo</option>';
     return;
@@ -58,11 +58,11 @@ function cargarVersiones() {
   
   fetch(`../models/obtener_versiones.php?id_instructivo=${id}`)
     .then(res => {
-      console.log('📡 Response status:', res.status);
+      //console.log('📡 Response status:', res.status);
       return res.json();
     })
     .then(data => {
-      console.log('💾 Versiones recibidas:', data.length);
+      //console.log('💾 Versiones recibidas:', data.length);
       const select = document.getElementById('selectVersion');
       select.innerHTML = '<option value="">Seleccione...</option>';
       
@@ -87,7 +87,7 @@ function descargarExcel() {
   const id = document.getElementById('selectInstructivo').value;
   const version = document.getElementById('selectVersion').value;
   
-  console.log('💾 Descargando Excel - ID:', id, 'Version:', version);
+  //console.log('💾 Descargando Excel - ID:', id, 'Version:', version);
   
   if (id && version) {
     window.location.href = `../exportar_excel_instructivo.php?id_instructivo=${id}&version=${version}`;

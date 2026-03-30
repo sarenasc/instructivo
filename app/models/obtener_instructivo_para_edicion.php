@@ -116,27 +116,48 @@ foreach ($detalle as $det) {
     $key = $det['numero_pedido'] . '-' . $det['id_embalaje'] . '-' . $det['id_categoria'];
     
     if (!isset($detalleAgrupado[$key])) {
-        $detalleAgrupado[$key] = [
-            'numero_pedido' => $det['numero_pedido'],
-            'cantidad' => $det['cantidad'],
-            'id_embalaje' => $det['id_embalaje'],
-            'embalaje_text' => $det['nombre_embalaje'] ?? '',
-            'id_categoria' => $det['id_categoria'],
-            'categoria_text' => $det['nombre_categoria'] ?? $det['cod_categoria'] ?? '',
-            'id_plu' => $det['id_plu'],
-            'plu_text' => $det['nombre_plu'] ?? $det['cod_plu'] ?? '',
-            'id_etiqueta' => $det['id_etiqueta'],
-            'etiqueta_text' => $det['nombre_etiqueta'] ?? '',
-            'id_pallet' => $det['id_pallet'],
-            'pallet_text' => $det['describ_pallet'] ?? '',
-            'altura_pallet' => $det['altura_pallet'],
-            'altura_text' => ($det['altura'] ?? '') . ' cm - ' . ($det['cajas'] ?? '') . ' cajas',
-            'id_destino' => $det['id_destino'],
-            'destino_text' => $det['nombre_destino'] ?? '',
-            'variedad_etiquetada' => $det['var_etiquetada'] ?? '',
-            'observacion' => $det['observacion'] ?? '',
-            'calibres' => []
-        ];
+            $codigoEmbalaje = $det['codigo_embalaje'] ?? '';
+            $nombreEmbalaje = $det['nombre_embalaje'] ?? '';
+
+            if ($codigoEmbalaje !== '' && $nombreEmbalaje !== '') {
+                $embalajeText = $codigoEmbalaje . ' - ' . $nombreEmbalaje;
+            } elseif ($codigoEmbalaje !== '') {
+                $embalajeText = $codigoEmbalaje;
+            } else {
+                $embalajeText = $nombreEmbalaje;
+            }
+
+            $detalleAgrupado[$key] = [
+                'numero_pedido' => $det['numero_pedido'],
+                'cantidad' => $det['cantidad'],
+
+                'id_embalaje' => $det['id_embalaje'],
+                'embalaje_codigo' => $codigoEmbalaje,
+                'embalaje_nombre' => $nombreEmbalaje,
+                'embalaje_text' => $embalajeText,
+
+                'id_categoria' => $det['id_categoria'],
+                'categoria_text' => $det['nombre_categoria'] ?? $det['cod_categoria'] ?? '',
+
+                'id_plu' => $det['id_plu'],
+                'plu_text' => $det['nombre_plu'] ?? $det['cod_plu'] ?? '',
+
+                'id_etiqueta' => $det['id_etiqueta'],
+                'etiqueta_text' => $det['nombre_etiqueta'] ?? '',
+
+                'id_pallet' => $det['id_pallet'],
+                'pallet_text' => $det['describ_pallet'] ?? '',
+
+                'altura_pallet' => $det['altura_pallet'],
+                'altura_text' => ($det['altura'] ?? '') . ' cm - ' . ($det['cajas'] ?? '') . ' cajas',
+
+                'id_destino' => $det['id_destino'],
+                'destino_text' => $det['nombre_destino'] ?? '',
+
+                'variedad_etiquetada' => $det['var_etiquetada'] ?? '',
+                'observacion' => $det['observacion'] ?? '',
+                'calibres' => []
+            ];
     }
     
     if ($det['id_calibre']) {

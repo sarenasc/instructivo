@@ -21,7 +21,7 @@ if (!isset($_SESSION['id'])) {
         <h2 class="mb-4">Gestion de Destinos</h2>
         
         <form id="formDestino" class="mb-4">
-            <input type="hidden" id="id_destino">
+            <input type="hidden" id="id_destino" name="id_destino">
             <div class="row">
                 <div class="col-md-4">
                     <label for="codigo_destino" class="form-label">Codigo Destino</label>
@@ -46,7 +46,7 @@ if (!isset($_SESSION['id'])) {
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>CÃ³digo</th>
+                        <th>Codigo</th>
                         <th>Nombre</th>
                         <th>Acciones</th>
                     </tr>

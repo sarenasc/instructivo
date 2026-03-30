@@ -50,16 +50,16 @@ function cargarTabla() {
             data.forEach(item => {
                 let row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${item.id_plu}</td>
+                    <td>${item.id}</td>
                     <td>${item.codigo_plu}</td>
                     <td>${item.nombre_plu}</td>
                     <td>${item.especie || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarPlu(${item.id_plu}, '${item.codigo_plu}', '${item.nombre_plu}', '${item.id_especie || ''}')">
-                            âœï¸ Editar
+                        <button class="btn btn-sm btn-warning" onclick="cargarPlu(${item.id}, '${item.codigo_plu}', '${item.nombre_plu}', '${item.id_especie || ''}')">
+                                Editar
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarPlu(${item.id_plu})">
-                            ðŸ—‘ï¸ Eliminar
+                        <button class="btn btn-sm btn-danger" onclick="eliminarPlu(${item.id})">
+                                Eliminar
                         </button>
                     </td>
                 `;

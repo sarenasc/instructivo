@@ -33,14 +33,14 @@ function cargarTabla() {
             data.forEach(item => {
                 let row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${item.id_destino}</td>
+                    <td>${item.id}</td>
                     <td>${item.codigo_destino}</td>
                     <td>${item.nombre_destino}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarDestino(${item.id_destino}, '${item.codigo_destino}', '${item.nombre_destino}')">
+                        <button class="btn btn-sm btn-warning" onclick="cargarDestino(${item.id}, '${item.codigo_destino}', '${item.nombre_destino}')">
                             Editar
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarDestino(${item.id_destino})">
+                        <button class="btn btn-sm btn-danger" onclick="eliminarDestino(${item.id})">
                             Eliminar
                         </button>
                     </td>
@@ -65,7 +65,7 @@ function enviarFormulario(accion) {
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Exito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }

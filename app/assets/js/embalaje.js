@@ -18,7 +18,7 @@ function cargarEtiquetas() {
             select.innerHTML = '<option value="">Seleccione una etiqueta</option>';
             data.forEach(item => {
                 const option = document.createElement("option");
-                option.value = item.id_etiqueta;
+                option.value = item.id;
                 option.textContent = item.nombre_etiqueta;
                 select.appendChild(option);
             });
@@ -51,7 +51,7 @@ function cargarExportadoras() {
             data.forEach(item => {
                 const option = document.createElement("option");
                 option.value = item.id;
-                option.textContent = item.Nombre_Exportadora;
+                option.textContent = item.nombre_exportadora;
                 select.appendChild(option);
             });
         })
@@ -73,7 +73,7 @@ function cargarTabla() {
             data.forEach(item => {
                 const row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${item.id_embalaje}</td>
+                    <td>${item.id}</td>
                     <td>${item.codigo_embalaje}</td>
                     <td>${item.nombre_embalaje}</td>
                     <td>${item.peso_embalaje || 'N/A'}</td>
@@ -81,8 +81,8 @@ function cargarTabla() {
                     <td>${item.especie || 'N/A'}</td>
                     <td>${item.Nombre_Exportadora || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id_embalaje})">âœï¸ Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id_embalaje})">ðŸ—‘ï¸ Eliminar</button>
+                        <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id})">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id})">Eliminar</button>
                     </td>
                 `;
             });
@@ -99,7 +99,7 @@ function cargarEmbalaje(id) {
         .then(r => r.json())
         .then(data => {
             if (data) {
-                document.getElementById("id_embalaje").value = data.id_embalaje;
+                document.getElementById("id_embalaje").value = data.id;
                 document.getElementById("codigo_embalaje").value = data.codigo_embalaje;
                 document.getElementById("nombre_embalaje").value = data.nombre_embalaje;
                 document.getElementById("peso_embalaje").value = data.peso_embalaje || '';

@@ -24,7 +24,7 @@ if (!isset($_SESSION['id'])) {
             <input type="hidden" id="id_categoria">
             <div class="row">
                 <div class="col-md-3">
-                    <label for="codigo_categoria" class="form-label">Codigo CategorÃ­a</label>
+                    <label for="codigo_categoria" class="form-label">Codigo Categori­a</label>
                     <input type="text" class="form-control" id="codigo_categoria" name="codigo_categoria" required>
                 </div>
                 <div class="col-md-4">

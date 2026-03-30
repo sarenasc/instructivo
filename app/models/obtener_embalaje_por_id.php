@@ -9,9 +9,10 @@ if (!$id) {
     exit;
 }
 
-$sql = "SELECT * FROM embalaje WHERE id_embalaje = ?";
-$stmt = sqlsrv_prepare($conn, $sql);
-sqlsrv_execute($stmt, [$id]);
+$sql = "SELECT id, Codigo_emb as codigo_embalaje, Descripcion_Embalaje as nombre_embalaje,
+               Peso_Embalaje as peso_embalaje, id_etiqueta, id_especie, id_exportadora
+        FROM inst_embalaje WHERE id = ?";
+$stmt = sqlsrv_query($conn, $sql, [$id]);
 
 $resultado = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
