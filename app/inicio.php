@@ -26,16 +26,32 @@ require_once __DIR__ . '/includes/header.php';
             
             <div class="d-grid gap-3">
                 <!-- Crear Instructivo -->
+                <div class="card shadow-sm border-primary">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span style="font-size: 2.5rem;">📝</span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1">Crear Instructivo</h5>
+                                <p class="card-text text-muted mb-2">Crea un instructivo completo: cabecera + pedidos + detalle por calibre</p>
+                                <a href="Procesos/crear_instructivo.php" class="btn btn-primary btn-sm">Crear</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editar Instructivo -->
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <span style="font-size: 2.5rem;">📋</span>
+                                <span style="font-size: 2.5rem;">✏️</span>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5 class="card-title mb-1">Crear Instructivo</h5>
-                                <p class="card-text text-muted mb-2">Crea nuevos instructivos de proceso productivo</p>
-                                <a href="Procesos/instructivo.php" class="btn btn-primary btn-sm">Ir a Crear</a>
+                                <h5 class="card-title mb-1">Editar Instructivo</h5>
+                                <p class="card-text text-muted mb-2">Edita y crea nuevas versiones (V2, V3, V4...)</p>
+                                <a href="Procesos/editar_instructivo.php" class="btn btn-warning btn-sm">Editar</a>
                             </div>
                         </div>
                     </div>

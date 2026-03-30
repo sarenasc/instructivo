@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $titulo_pagina = 'Agregar Pedidos';
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -13,18 +13,18 @@ require_once __DIR__ . '/../includes/header.php';
             <select id="selectInstructivo" class="form-select"></select>
         </div>
         <div class="col-md-6">
-            <label for="selectVersion" class="form-label">Versión</label>
+            <label for="selectVersion" class="form-label">VersiÃ³n</label>
             <select id="selectVersion" class="form-select"></select>
         </div>
     </div>
 </div>
 
-<!-- MODAL: Visualizar y Editar Versión -->
+<!-- MODAL: Visualizar y Editar VersiÃ³n -->
 <div class="modal fade" id="modalEditarVersion" tabindex="-1" aria-labelledby="modalEditarVersionLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalEditarVersionLabel">Editar Versión de Instructivo</h5>
+                <h5 class="modal-title" id="modalEditarVersionLabel">Editar VersiÃ³n de Instructivo</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
@@ -43,11 +43,11 @@ require_once __DIR__ . '/../includes/header.php';
                         <input type="text" id="readonlyTurno" class="form-control" readonly>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Versión</label>
+                        <label class="form-label">VersiÃ³n</label>
                         <input type="text" id="readonlyVersion" class="form-control" readonly>
                     </div>
                     <div class="col-md-12 mt-2">
-                        <label class="form-label">Observación</label>
+                        <label class="form-label">ObservaciÃ³n</label>
                         <textarea id="readonlyObservacion" class="form-control" rows="2" readonly></textarea>
                     </div>
                 </div>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <h5 class="mt-4">Agregar Pedido</h5>
                 <div class="row g-3 align-items-end mb-4">
                     <div class="col-md-6">
-                        <label for="selectNumeroPedido" class="form-label">Número de Pedido</label>
+                        <label for="selectNumeroPedido" class="form-label">NÃºmero de Pedido</label>
                         <select id="selectNumeroPedido" class="form-select"></select>
                     </div>
                     <div class="col-md-4">
@@ -73,18 +73,18 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
 
                 <!-- Lista de Pedidos Insertados -->
-                <h6>Pedidos Añadidos</h6>
+                <h6>Pedidos AÃ±adidos</h6>
                 <table class="table table-bordered" id="tablaPedidos">
                     <thead class="table-light">
                         <tr>
-                            <th>N° Pedido</th>
+                            <th>NÂ° Pedido</th>
                             <th>Cantidad</th>
                             <th>Prioridad</th>
-                            <th>Acción</th>
+                            <th>AcciÃ³n</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Aquí se agregarán los pedidos dinámicamente -->
+                        <!-- AquÃ­ se agregarÃ¡n los pedidos dinÃ¡micamente -->
                     </tbody>
                 </table>
 
@@ -105,3 +105,4 @@ $scripts_extra = '
 ';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

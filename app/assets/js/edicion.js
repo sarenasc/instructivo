@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
   // Cambio de tabla en el select
   document.getElementById('tablaConfig').addEventListener('change', function () {
     const tabla = this.value;
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Envío del formulario del modal
+  // EnvÃ­o del formulario del modal
   const form = document.getElementById('formEdicion');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       datos[input.name] = input.value.trim();
     });
 
-    fetch(`../modificar_${tabla}.php`, {
+    fetch(`../controllers/modificar_${tabla}.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function cargarTabla(tabla) {
-  fetch(`../api_${tabla}.php`)
+  fetch(`../services/api_${tabla}.php`)
     .then(res => res.json())
     .then(data => {
       if (Array.isArray(data)) {
@@ -129,7 +129,7 @@ function mostrarModalEdicion(tabla, datos) {
 }
 
 function eliminarRegistro(tabla, id) {
-  if (!confirm('¿Seguro que deseas eliminar este registro?')) return;
+  if (!confirm('Â¿Seguro que deseas eliminar este registro?')) return;
 
   fetch(`eliminar_${tabla}.php`, {
     method: 'POST',
@@ -173,4 +173,5 @@ function actualizarFilaEnDOM(datosActualizados) {
     }
   });
 }
+
 

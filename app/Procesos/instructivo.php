@@ -1,5 +1,5 @@
-<?php
-$titulo_pagina = 'Creación de Instructivo';
+﻿<?php
+$titulo_pagina = 'CreaciÃ³n de Instructivo';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
@@ -30,7 +30,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <label for="turno" class="form-label">Turno</label>
                 <select class="form-select" id="turno" name="turno" required>
                     <option value="">Seleccione...</option>
-                    <option value="DIA">Día</option>
+                    <option value="DIA">DÃ­a</option>
                     <option value="NOCHE">Noche</option>
                 </select>
             </div>
@@ -38,7 +38,7 @@ require_once __DIR__ . '/../includes/header.php';
 
         <div class="row mb-3">
             <div class="col-md-12">
-                <label for="observacion" class="form-label">Observación</label>
+                <label for="observacion" class="form-label">ObservaciÃ³n</label>
                 <textarea class="form-control" id="observacion" name="observacion" rows="2"></textarea>
             </div>
         </div>
@@ -49,7 +49,7 @@ require_once __DIR__ . '/../includes/header.php';
         
         <div class="row mb-3">
             <div class="col-md-2">
-                <label for="numero_pedido" class="form-label">Número Pedido</label>
+                <label for="numero_pedido" class="form-label">NÃºmero Pedido</label>
                 <input type="text" class="form-control" id="numero_pedido" name="numero_pedido">
             </div>
             <div class="col-md-2">
@@ -69,7 +69,7 @@ require_once __DIR__ . '/../includes/header.php';
                 </select>
             </div>
             <div class="col-md-2">
-                <label for="id_categoria" class="form-label">Categoría</label>
+                <label for="id_categoria" class="form-label">CategorÃ­a</label>
                 <select class="form-select" id="id_categoria" name="id_categoria">
                     <option value="">Seleccione...</option>
                 </select>
@@ -126,3 +126,4 @@ require_once __DIR__ . '/../includes/header.php';
 $scripts_extra = '<script src="instructivo.js"></script>';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

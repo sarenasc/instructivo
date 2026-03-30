@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (!isset($_SESSION['id'])) {
     header("Location: ../index.php");
@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Destinos</title>
+    <title>GestiÃ³n de Destinos</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -18,13 +18,13 @@ if (!isset($_SESSION['id'])) {
     <?php include '../includes/header.php'; ?>
 
     <div class="container mt-4">
-        <h2 class="mb-4">Gestión de Destinos</h2>
+        <h2 class="mb-4">GestiÃ³n de Destinos</h2>
         
         <form id="formDestino" class="mb-4">
             <input type="hidden" id="id_destino">
             <div class="row">
                 <div class="col-md-4">
-                    <label for="codigo_destino" class="form-label">Código Destino</label>
+                    <label for="codigo_destino" class="form-label">CÃ³digo Destino</label>
                     <input type="text" class="form-control" id="codigo_destino" name="codigo_destino" required>
                 </div>
                 <div class="col-md-6">
@@ -46,7 +46,7 @@ if (!isset($_SESSION['id'])) {
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Código</th>
+                        <th>CÃ³digo</th>
                         <th>Nombre</th>
                         <th>Acciones</th>
                     </tr>
@@ -60,3 +60,4 @@ if (!isset($_SESSION['id'])) {
     <script src="../assets/js/destino.js"></script>
 </body>
 </html>
+

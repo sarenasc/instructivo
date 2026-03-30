@@ -1,4 +1,4 @@
-cargarEspecies();
+﻿cargarEspecies();
 cargarExportadora()
 
 function cargarCombo(tabla, selectId, idExportadora, especie) {
@@ -9,7 +9,7 @@ function cargarCombo(tabla, selectId, idExportadora, especie) {
   const tablasSoloExportadora = ["etiqueta", "pallet"];
   const SoloEspecie = ["plu", "calibre"];
 
-  let url = `../api_instructivo_combobox.php?tabla=${tabla}`;
+  let url = `../services/api_instructivo_combobox.php?tabla=${tabla}`;
 
 
     if (SoloEspecie.includes(tabla)) {
@@ -45,7 +45,7 @@ function cargarCombo(tabla, selectId, idExportadora, especie) {
 
 
 
-// Llenar combos al cargar la página
+// Llenar combos al cargar la pÃ¡gina
 document.addEventListener("DOMContentLoaded", function () {
 
   const selectExportadora = document.getElementById("id_exportadora");
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 function cargarEspecies() {
-    fetch("../api_especies.php")
+    fetch("../services/api_especies.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("especie");
@@ -104,7 +104,7 @@ function cargarEspecies() {
 }
 
 function cargarExportadora() {
-    fetch("../api_exportadora.php")
+    fetch("../services/api_exportadora.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("id_exportadora");
@@ -121,14 +121,14 @@ function cargarExportadora() {
 
 
 
-// Manejo del envío del formulario principal
+// Manejo del envÃ­o del formulario principal
 const form = document.getElementById("formCabecera");
 if (form) {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     const formData = new FormData(form);
 
-    fetch("../procesar_instructivo.php", {
+    fetch("../controllers/procesar_instructivo.php", {
       method: "POST",
       body: formData
     })
@@ -138,10 +138,10 @@ if (form) {
 //mensaje verde con letras blancas
 if (data.success) {
   mensajeDiv.className = "alert alert-success text-white bg-success";
-  mensajeDiv.textContent = "Instructivo guardado con éxito. ID: " + data.id_instructivo;
+  mensajeDiv.textContent = "Instructivo guardado con Ã©xito. ID: " + data.id_instructivo;
   mensajeDiv.classList.remove("d-none");
 
-  // Opcional: ocultar mensaje después de unos segundos
+  // Opcional: ocultar mensaje despuÃ©s de unos segundos
   setTimeout(() => {
     mensajeDiv.classList.add("d-none");
   }, 5000);
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    fetch(`../api_alturas_pallet.php?id_embalaje=${embalajeId}`)
+    fetch(`../services/api_alturas_pallet.php?id_embalaje=${embalajeId}`)
       .then(res => res.json())
       .then(data => {
         alturaSelect.innerHTML = '<option value="">Seleccione Altura y Cajas</option>';

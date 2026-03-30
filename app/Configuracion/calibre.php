@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (!isset($_SESSION['id'])) {
     header("Location: ../index.php");
@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Calibres</title>
+    <title>GestiÃ³n de Calibres</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -18,7 +18,7 @@ if (!isset($_SESSION['id'])) {
     <?php include '../includes/header.php'; ?>
 
 <div class="container mt-5">
-    <h2 class="mb-4">Gestión de Calibres</h2>
+    <h2 class="mb-4">GestiÃ³n de Calibres</h2>
     
     <!-- Formulario -->
     <div class="card mb-4">
@@ -28,7 +28,7 @@ if (!isset($_SESSION['id'])) {
                 <input type="hidden" id="id_calibre" name="id_calibre">
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <label for="codigo_calibre" class="form-label">Código Calibre</label>
+                        <label for="codigo_calibre" class="form-label">CÃ³digo Calibre</label>
                         <input type="text" class="form-control" id="codigo_calibre" name="codigo_calibre" required>
                     </div>
                     <div class="col-md-4 mb-3">
@@ -61,7 +61,7 @@ if (!isset($_SESSION['id'])) {
                     <thead class="table-light">
                         <tr>
                             <th>ID</th>
-                            <th>Código</th>
+                            <th>CÃ³digo</th>
                             <th>Nombre</th>
                             <th>Especie</th>
                             <th>Acciones</th>
@@ -80,3 +80,4 @@ if (!isset($_SESSION['id'])) {
 
 <?php include '../includes/footer.php'; ?>
 <script src="../assets/js/calibre.js"></script>
+

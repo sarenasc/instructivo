@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup - Tabla por Calibre Individual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .tabla-calibres-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Cinta de calibres */
+        .cinta-calibres {
+            display: flex;
+            gap: 4px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .calibre-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .calibre-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Colores por calibre */
+        .calibre-20 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .calibre-21 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .calibre-22 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .calibre-23 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .calibre-25 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .calibre-27 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .calibre-30 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+        
+        /* Tabla */
+        .tabla-calibres {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .tabla-calibres th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: none;
+            white-space: nowrap;
+        }
+        
+        .tabla-calibres th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+        
+        .tabla-calibres th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        
+        .tabla-calibres td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        
+        .tabla-calibres tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Agrupamiento por pedido */
+        .grupo-pedido {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .grupo-pedido td:first-child {
+            font-weight: 700;
+            color: #856404;
+        }
+        
+        /* Badge de calibre en tabla */
+        .badge-calibre {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        /* Botón ver más */
+        .btn-ver-mas {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn-ver-mas:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Modal */
+        .modal-calibres .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+        
+        .modal-calibres .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <h2 class="mb-4">📋 Mockup - Cada Calibre es una Fila</h2>
+    
+    <!-- Stats -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value">2</div>
+            <div class="stat-label">📦 Pedidos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">7</div>
+            <div class="stat-label">📏 Calibres</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">1500</div>
+            <div class="stat-label">📈 Total Cajas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">2</div>
+            <div class="stat-label">🌍 Destinos</div>
+        </div>
+    </div>
+    
+    <!-- Tabla Principal -->
+    <div class="tabla-calibres-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="mb-1">🎯 Detalle por Calibre</h5>
+                <small class="text-muted">Cada fila representa un calibre con su configuración completa</small>
+            </div>
+            <button class="btn-ver-mas" data-bs-toggle="modal" data-bs-target="#modalDetalle">
+                👁️ Ver en Pantalla Completa
+            </button>
+        </div>
+        
+        <!-- Cinta de Calibres -->
+        <div class="cinta-calibres">
+            <div class="calibre-badge calibre-20">20</div>
+            <div class="calibre-badge calibre-21">21</div>
+            <div class="calibre-badge calibre-22">22</div>
+            <div class="calibre-badge calibre-23">23</div>
+            <div class="calibre-badge calibre-25">25</div>
+            <div class="calibre-badge calibre-27">27</div>
+            <div class="calibre-badge calibre-30">30</div>
+        </div>
+        
+        <!-- Tabla -->
+        <table class="tabla-calibres">
+            <thead>
+                <tr>
+                    <th style="min-width: 80px;">📦 Pedido</th>
+                    <th style="min-width: 100px;">🏷️ Variedad</th>
+                    <th style="min-width: 180px;">📦 Embalaje</th>
+                    <th style="min-width: 120px;">🏷️ Etiqueta</th>
+                    <th style="min-width: 90px;">📏 Calibre</th>
+                    <th style="min-width: 90px;">📊 Categoría</th>
+                    <th style="min-width: 80px;">🔢 PLU</th>
+                    <th style="min-width: 100px;">🌍 Destino</th>
+                    <th style="min-width: 90px;">📈 Cantidad</th>
+                    <th style="min-width: 120px;">📐 Altura</th>
+                    <th>📝 Obs</th>
+                    <th style="min-width: 100px;">⚙️ Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- GRUPO 1: Pedido 1044 -->
+                <tr class="grupo-pedido">
+                    <td rowspan="3" style="vertical-align: middle; text-align: center;">
+                        <strong>1044</strong>
+                    </td>
+                    <td rowspan="3" style="vertical-align: middle;">Golden</td>
+                    <td rowspan="3" style="vertical-align: middle;">
+                        <strong>KP10PGE</strong><br>
+                        <small class="text-muted">Caja 10kg PGE</small>
+                    </td>
+                    <td rowspan="3" style="vertical-align: middle;">Don Pablo</td>
+                    <td style="text-align: center;">
+                        <span class="badge-calibre calibre-20">20</span>
+                    </td>
+                    <td>CAT1</td>
+                    <td>4014</td>
+                    <td>Rusia</td>
+                    <td>1000</td>
+                    <td>10 cm - 100</td>
+                    <td>-</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <span class="badge-calibre calibre-23">23</span>
+                    </td>
+                    <td>CAT1</td>
+                    <td>4014</td>
+                    <td>Rusia</td>
+                    <td>1000</td>
+                    <td>10 cm - 100</td>
+                    <td>-</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <span class="badge-calibre calibre-25">25</span>
+                    </td>
+                    <td>CAT1</td>
+                    <td>4014</td>
+                    <td>Rusia</td>
+                    <td>1000</td>
+                    <td>10 cm - 100</td>
+                    <td>-</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                    </td>
+                </tr>
+                
+                <!-- GRUPO 2: Pedido 1232 -->
+                <tr class="grupo-pedido">
+                    <td rowspan="2" style="vertical-align: middle; text-align: center;">
+                        <strong>1232</strong>
+                    </td>
+                    <td rowspan="2" style="vertical-align: middle;">Yellow</td>
+                    <td rowspan="2" style="vertical-align: middle;">
+                        <strong>KP5PG</strong><br>
+                        <small class="text-muted">Caja 5kg PG</small>
+                    </td>
+                    <td rowspan="2" style="vertical-align: middle;">Agua Santa</td>
+                    <td style="text-align: center;">
+                        <span class="badge-calibre calibre-22">22</span>
+                    </td>
+                    <td>CAT2</td>
+                    <td>4015</td>
+                    <td>EEUU</td>
+                    <td>500</td>
+                    <td>8 cm - 80</td>
+                    <td>Frágil</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <span class="badge-calibre calibre-27">27</span>
+                    </td>
+                    <td>CAT2</td>
+                    <td>4015</td>
+                    <td>EEUU</td>
+                    <td>500</td>
+                    <td>8 cm - 80</td>
+                    <td>Frágil</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Leyenda -->
+        <div class="mt-3 p-3 bg-light rounded">
+            <strong>💡 Leyenda:</strong>
+            <span class="ms-3">🟨 Fondo amarillo = Mismo pedido</span>
+            <span class="ms-3">🎨 Colores = Calibre único</span>
+            <span class="ms-3">📊 Cantidad = Total del pedido (se repite por calibre)</span>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pantalla Completa -->
+<div class="modal fade modal-calibres" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🔍 Detalle Completo de Calibres</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Stats en modal -->
+                <div class="stats-container mb-4">
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">📦 Pedidos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">📏 Calibres</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1500</div>
+                        <div class="stat-label">📈 Total Cajas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">🌍 Destinos</div>
+                    </div>
+                </div>
+                
+                <!-- Cinta de calibres grande -->
+                <div class="cinta-calibres mb-4">
+                    <div class="calibre-badge calibre-20" style="font-size: 16px; padding: 12px 24px;">20</div>
+                    <div class="calibre-badge calibre-21" style="font-size: 16px; padding: 12px 24px;">21</div>
+                    <div class="calibre-badge calibre-22" style="font-size: 16px; padding: 12px 24px;">22</div>
+                    <div class="calibre-badge calibre-23" style="font-size: 16px; padding: 12px 24px;">23</div>
+                    <div class="calibre-badge calibre-25" style="font-size: 16px; padding: 12px 24px;">25</div>
+                    <div class="calibre-badge calibre-27" style="font-size: 16px; padding: 12px 24px;">27</div>
+                    <div class="calibre-badge calibre-30" style="font-size: 16px; padding: 12px 24px;">30</div>
+                </div>
+                
+                <!-- Tabla completa en modal -->
+                <table class="tabla-calibres">
+                    <thead>
+                        <tr>
+                            <th>📦 Pedido</th>
+                            <th>🏷️ Variedad</th>
+                            <th>📦 Embalaje</th>
+                            <th>🏷️ Etiqueta</th>
+                            <th>📏 Calibre</th>
+                            <th>📊 Categoría</th>
+                            <th>🔢 PLU</th>
+                            <th>🌍 Destino</th>
+                            <th>📈 Cantidad</th>
+                            <th>📐 Altura</th>
+                            <th>📝 Obs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="grupo-pedido">
+                            <td rowspan="3" style="vertical-align: middle; text-align: center;"><strong>1044</strong></td>
+                            <td rowspan="3" style="vertical-align: middle;">Golden</td>
+                            <td rowspan="3" style="vertical-align: middle;"><strong>KP10PGE</strong><br><small>Caja 10kg PGE</small></td>
+                            <td rowspan="3" style="vertical-align: middle;">Don Pablo</td>
+                            <td style="text-align: center;"><span class="badge-calibre calibre-20">20</span></td>
+                            <td>CAT1</td>
+                            <td>4014</td>
+                            <td>Rusia</td>
+                            <td>1000</td>
+                            <td>10 cm - 100</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><span class="badge-calibre calibre-23">23</span></td>
+                            <td>CAT1</td>
+                            <td>4014</td>
+                            <td>Rusia</td>
+                            <td>1000</td>
+                            <td>10 cm - 100</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><span class="badge-calibre calibre-25">25</span></td>
+                            <td>CAT1</td>
+                            <td>4014</td>
+                            <td>Rusia</td>
+                            <td>1000</td>
+                            <td>10 cm - 100</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="grupo-pedido">
+                            <td rowspan="2" style="vertical-align: middle; text-align: center;"><strong>1232</strong></td>
+                            <td rowspan="2" style="vertical-align: middle;">Yellow</td>
+                            <td rowspan="2" style="vertical-align: middle;"><strong>KP5PG</strong><br><small>Caja 5kg PG</small></td>
+                            <td rowspan="2" style="vertical-align: middle;">Agua Santa</td>
+                            <td style="text-align: center;"><span class="badge-calibre calibre-22">22</span></td>
+                            <td>CAT2</td>
+                            <td>4015</td>
+                            <td>EEUU</td>
+                            <td>500</td>
+                            <td>8 cm - 80</td>
+                            <td>Frágil</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><span class="badge-calibre calibre-27">27</span></td>
+                            <td>CAT2</td>
+                            <td>4015</td>
+                            <td>EEUU</td>
+                            <td>500</td>
+                            <td>8 cm - 80</td>
+                            <td>Frágil</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

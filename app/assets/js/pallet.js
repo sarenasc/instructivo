@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarExportadora();
     cargarTabla();
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarExportadora() {
-    fetch("../obtener_exportadoras.php")
+    fetch("../models/obtener_exportadoras.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("id_exportadora");
@@ -36,7 +36,7 @@ function cargarExportadora() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_pallets.php")
+    fetch("../models/obtener_pallets.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaPallet tbody");
@@ -56,10 +56,10 @@ function cargarTabla() {
                     <td>${item.nombre_exportadora || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarPallet(${item.id_pallet}, '${item.cod_pallet}', '${item.descrip_pallet}', '${item.id_exportadora || ''}')">
-                            ✏️ Editar
+                            âœï¸ Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarPallet(${item.id_pallet})">
-                            🗑️ Eliminar
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -76,14 +76,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formPallet"));
     formData.append("accion", accion);
 
-    fetch("../procesar_pallet.php", {
+    fetch("../controllers/procesar_pallet.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -99,12 +99,12 @@ function cargarPallet(id, codigo, descripcion, id_exportadora) {
 }
 
 function eliminarPallet(id) {
-    if (confirm("¿Está seguro de eliminar este pallet?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar este pallet?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_pallet", id);
 
-        fetch("../procesar_pallet.php", {
+        fetch("../controllers/procesar_pallet.php", {
             method: "POST",
             body: formData
         })
@@ -121,3 +121,4 @@ function limpiarFormulario() {
     document.getElementById("formPallet").reset();
     document.getElementById("id_pallet").value = "";
 }
+

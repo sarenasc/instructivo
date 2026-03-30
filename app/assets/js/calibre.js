@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarEspecies();
     cargarTabla();
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarEspecies() {
-    fetch("../obtener_especies.php")
+    fetch("../services/api_especies.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("especie");
@@ -36,7 +36,7 @@ function cargarEspecies() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_calibres.php")
+    fetch("../models/obtener_calibres.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaCalibres tbody");
@@ -50,16 +50,16 @@ function cargarTabla() {
             data.forEach(calibre => {
                 let row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${calibre.id_calibre}</td>
-                    <td>${calibre.codigo_calibre}</td>
+                    <td>${calibre.id}</td>
+                    <td>${calibre.cod_calibre}</td>
                     <td>${calibre.nombre_calibre}</td>
                     <td>${calibre.especie || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarCalibre(${calibre.id_calibre}, '${calibre.codigo_calibre}', '${calibre.nombre_calibre}', '${calibre.id_especie || ''}')">
-                            ✏️ Editar
+                        <button class="btn btn-sm btn-warning" onclick="cargarCalibre(${calibre.id}, '${calibre.cod_calibre}', '${calibre.nombre_calibre}', '${calibre.id_especie || ''}')">
+                            âœï¸ Editar
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarCalibre(${calibre.id_calibre})">
-                            🗑️ Eliminar
+                        <button class="btn btn-sm btn-danger" onclick="eliminarCalibre(${calibre.id})">
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -76,14 +76,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formCalibre"));
     formData.append("accion", accion);
 
-    fetch("../procesar_calibre.php", {
+    fetch("../controllers/procesar_calibre.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -99,12 +99,12 @@ function cargarCalibre(id, codigo, nombre, id_especie) {
 }
 
 function eliminarCalibre(id) {
-    if (confirm("¿Está seguro de eliminar este calibre?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar este calibre?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_calibre", id);
 
-        fetch("../procesar_calibre.php", {
+        fetch("../controllers/procesar_calibre.php", {
             method: "POST",
             body: formData
         })
@@ -121,3 +121,6 @@ function limpiarFormulario() {
     document.getElementById("formCalibre").reset();
     document.getElementById("id_calibre").value = "";
 }
+
+
+

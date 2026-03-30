@@ -1,10 +1,10 @@
-<?php
-$titulo_pagina = 'Configuración Altura Pallet';
+﻿<?php
+$titulo_pagina = 'ConfiguraciÃ³n Altura Pallet';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container mt-5">
-    <h2 class="mb-4">Gestión de Altura Pallet</h2>
+    <h2 class="mb-4">GestiÃ³n de Altura Pallet</h2>
     
     <!-- Formulario -->
     <div class="card mb-4">
@@ -68,3 +68,4 @@ require_once __DIR__ . '/../includes/header.php';
 $scripts_extra = '<script src="../assets/js/inst_altura_pallet.js"></script>';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

@@ -1,11 +1,11 @@
-<?php
-$titulo_pagina = 'Instructivo Dinámico';
+﻿<?php
+$titulo_pagina = 'Instructivo DinÃ¡mico';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container mt-4">
-    <h1>Instructivo Dinámico</h1>
-    <h5>Selecciona una versión</h5>
+    <h1>Instructivo DinÃ¡mico</h1>
+    <h5>Selecciona una versiÃ³n</h5>
 
     <label>Exportadora:</label>
     <div class="row g-2">
@@ -18,7 +18,7 @@ require_once __DIR__ . '/../includes/header.php';
             <select id="instructivoSelect" class="form-select"></select>
         </div>
 
-        <label>Versión:</label>
+        <label>VersiÃ³n:</label>
         <div class="col-md-4">
             <select id="versionSelect" class="form-select"></select>
         </div>
@@ -30,7 +30,7 @@ document.getElementById('versionSelect').addEventListener('change', () => {
     const id_instructivo = document.getElementById('instructivoSelect').value;
     const version = document.getElementById('versionSelect').value;
 
-    // Redirigir a nueva página con parámetros
+    // Redirigir a nueva pÃ¡gina con parÃ¡metros
     window.location.href = `detalle.html?id_instructivo=${id_instructivo}&version=${version}`;
 });
 </script>
@@ -39,3 +39,4 @@ document.getElementById('versionSelect').addEventListener('change', () => {
 $scripts_extra = '<script src="../assets/js/scripts.js"></script>';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

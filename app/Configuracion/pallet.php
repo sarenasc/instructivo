@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (!isset($_SESSION['id'])) {
     header("Location: ../index.php");
@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Pallets</title>
+    <title>GestiÃ³n de Pallets</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -18,17 +18,17 @@ if (!isset($_SESSION['id'])) {
     <?php include '../includes/header.php'; ?>
 
     <div class="container mt-4">
-        <h2 class="mb-4">Gestión de Pallets</h2>
+        <h2 class="mb-4">GestiÃ³n de Pallets</h2>
         
         <form id="formPallet" class="mb-4">
             <input type="hidden" id="id_pallet">
             <div class="row">
                 <div class="col-md-3">
-                    <label for="cod_pallet" class="form-label">Código Pallet</label>
+                    <label for="cod_pallet" class="form-label">CÃ³digo Pallet</label>
                     <input type="text" class="form-control" id="cod_pallet" name="cod_pallet" required>
                 </div>
                 <div class="col-md-5">
-                    <label for="descrip_pallet" class="form-label">Descripción Pallet</label>
+                    <label for="descrip_pallet" class="form-label">DescripciÃ³n Pallet</label>
                     <input type="text" class="form-control" id="descrip_pallet" name="descrip_pallet" required>
                 </div>
                 <div class="col-md-4">
@@ -52,8 +52,8 @@ if (!isset($_SESSION['id'])) {
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Código</th>
-                        <th>Descripción</th>
+                        <th>CÃ³digo</th>
+                        <th>DescripciÃ³n</th>
                         <th>Exportadora</th>
                         <th>Acciones</th>
                     </tr>
@@ -67,3 +67,4 @@ if (!isset($_SESSION['id'])) {
     <script src="../assets/js/pallet.js"></script>
 </body>
 </html>
+

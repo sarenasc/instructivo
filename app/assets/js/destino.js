@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarTabla();
 
     document.getElementById("btnGuardar").addEventListener("click", function () {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarTabla() {
-    fetch("../obtener_destinos.php")
+    fetch("../models/obtener_destinos.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaDestino tbody");
@@ -38,10 +38,10 @@ function cargarTabla() {
                     <td>${item.nombre_destino}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarDestino(${item.id_destino}, '${item.codigo_destino}', '${item.nombre_destino}')">
-                            ✏️ Editar
+                            âœï¸ Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarDestino(${item.id_destino})">
-                            🗑️ Eliminar
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -58,14 +58,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formDestino"));
     formData.append("accion", accion);
 
-    fetch("../procesar_destino.php", {
+    fetch("../controllers/procesar_destino.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -80,12 +80,12 @@ function cargarDestino(id, codigo, nombre) {
 }
 
 function eliminarDestino(id) {
-    if (confirm("¿Está seguro de eliminar este destino?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar este destino?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_destino", id);
 
-        fetch("../procesar_destino.php", {
+        fetch("../controllers/procesar_destino.php", {
             method: "POST",
             body: formData
         })
@@ -102,3 +102,4 @@ function limpiarFormulario() {
     document.getElementById("formDestino").reset();
     document.getElementById("id_destino").value = "";
 }
+

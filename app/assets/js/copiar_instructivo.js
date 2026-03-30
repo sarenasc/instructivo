@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
   const exportadoraSelect = document.getElementById("exportadora");
   const instructivoSelect = document.getElementById("instructivo");
   const versionSelect = document.getElementById("version");
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let instructivosGlobal = [];
 
   // 1. Cargar exportadoras
-  fetch("../api_exportadora.php")
+  fetch("../services/api_exportadora.php")
     .then(res => res.json())
     .then(data => {
       data.forEach(exp => {
@@ -21,10 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
   exportadoraSelect.addEventListener("change", () => {
     instructivoSelect.disabled = false;
     instructivoSelect.innerHTML = '<option value="">Seleccione un instructivo</option>';
-    versionSelect.innerHTML = '<option value="">Seleccione una versión</option>';
+    versionSelect.innerHTML = '<option value="">Seleccione una versiÃ³n</option>';
     versionSelect.disabled = true;
 
-    fetch("../obtener_instructivo.php")
+    fetch("../models/obtener_instructivo.php")
       .then(res => res.json())
       .then(json => {
         if (json.success) {
@@ -47,13 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Al seleccionar instructivo, cargar versiones
   instructivoSelect.addEventListener("change", () => {
     versionSelect.disabled = false;
-    versionSelect.innerHTML = '<option value="">Seleccione una versión</option>';
+    versionSelect.innerHTML = '<option value="">Seleccione una versiÃ³n</option>';
 
-    fetch(`../obtener_version.php?id_instructivo=${instructivoSelect.value}`)
+    fetch(`../models/obtener_version.php?id_instructivo=${instructivoSelect.value}`)
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      // Extraer solo los números de versión
+      // Extraer solo los nÃºmeros de versiÃ³n
       const versiones = data.data.map(item => item.version);
 
       // Usar Set para eliminar duplicados y convertirlo de nuevo en array
@@ -61,12 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Limpiar y llenar el select de versiones
       const selectVersion = document.getElementById('version');
-      selectVersion.innerHTML = '<option value="">Seleccione versión</option>';
+      selectVersion.innerHTML = '<option value="">Seleccione versiÃ³n</option>';
 
       versionesUnicas.forEach(version => {
         const option = document.createElement('option');
         option.value = version;
-        option.textContent = `Versión ${version}`;
+        option.textContent = `VersiÃ³n ${version}`;
         selectVersion.appendChild(option);
       });
     } else {
@@ -79,9 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // 4. Al seleccionar versión, mostrar modal con detalle
+  // 4. Al seleccionar versiÃ³n, mostrar modal con detalle
   versionSelect.addEventListener("change", () => {
-  fetch(`../obtener_detalle_por_version.php?id_instructivo=${instructivoSelect.value}&version=${versionSelect.value}`)
+  fetch(`../models/obtener_detalle_por_version.php?id_instructivo=${instructivoSelect.value}&version=${versionSelect.value}`)
     .then(res => res.json())
     .then(json => {
       if (json.success) {
@@ -147,10 +147,10 @@ fetch('../copiar_instructivo.php', {
   if (data.success) {
     alert("Instructivo copiado exitosamente. Nuevo ID: " + data.nuevo_id);
     
-    // Cerrar el modal (si usas Bootstrap 5)
-    const modalElement = document.getElementById('modalDetalle');
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-    modalInstance.hide();
+Â Â Â  // Cerrar el modal (si usas Bootstrap 5)
+Â Â Â  const modalElement = document.getElementById('modalDetalle');
+Â Â Â  const modalInstance = bootstrap.Modal.getInstance(modalElement);
+Â Â Â  modalInstance.hide();
 
   } else {
     alert("Error: " + data.message);
@@ -164,3 +164,4 @@ fetch('../copiar_instructivo.php', {
   });
 
 });
+

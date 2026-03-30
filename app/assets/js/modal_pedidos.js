@@ -1,8 +1,8 @@
-let pedidosAgregados = [];
+﻿let pedidosAgregados = [];
 
 function mostrarModalVersion(idInstructivo, version) {
    // Cargar cabecera
-  $.getJSON('../obtener_cabecera_por_version.php', { id_instructivo: idInstructivo, version }, function (resp) {
+  $.getJSON('../models/obtener_cabecera_por_version.php', { id_instructivo: idInstructivo, version }, function (resp) {
     
       
       $('#readonlyVersion').val(version);
@@ -13,8 +13,8 @@ function mostrarModalVersion(idInstructivo, version) {
     
   });
 
- // Cargar número de pedidos desde inst_detalle_instructivo
-$.getJSON('../obtener_pedidos_existentes.php', { id_instructivo: idInstructivo, version }, function (resp) {
+ // Cargar nÃºmero de pedidos desde inst_detalle_instructivo
+$.getJSON('../models/obtener_pedidos_existentes.php', { id_instructivo: idInstructivo, version }, function (resp) {
   if (resp.success && resp.data) {
     $('#selectNumeroPedido').empty().append('<option value="">Seleccione...</option>');
 
@@ -37,7 +37,7 @@ $.getJSON('../obtener_pedidos_existentes.php', { id_instructivo: idInstructivo, 
 
 
   // Cargar pedidos existentes
-/*$.getJSON('../obtener_pedidos_posibles.php', { id_instructivo: idInstructivo, version }, function (resp) {
+/*$.getJSON('../models/obtener_pedidos_posibles.php', { id_instructivo: idInstructivo, version }, function (resp) {
   if (resp.success && resp.data.length > 0) {
     pedidosAgregados = [...resp.data]; // Guardar en variable global
     resp.data.forEach(pedido => {
@@ -89,7 +89,7 @@ $('#btnGuardarPedidos').on('click', function () {
 
   if (pedidosAgregados.length === 0) return alert("No hay pedidos para guardar.");
 
-  $.post('../guardar_pedidos.php', {
+  $.post('../controllers/guardar_pedidos.php', {
     id_instructivo: idInstructivo,
     version,
     pedidos: JSON.stringify(pedidosAgregados)
@@ -101,5 +101,6 @@ $('#btnGuardarPedidos').on('click', function () {
 
   $('#modalEditarVersion').modal('show');
 }
+
 
 

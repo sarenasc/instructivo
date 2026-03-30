@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarEspecies();
     cargarExportadora();
     cargarTabla();
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarEspecies() {
-    fetch("../obtener_especies.php")
+    fetch("../services/api_especies.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("especie_categoria");
@@ -37,7 +37,7 @@ function cargarEspecies() {
 }
 
 function cargarExportadora() {
-    fetch("../obtener_exportadoras.php")
+    fetch("../models/obtener_exportadoras.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("exportadora");
@@ -53,7 +53,7 @@ function cargarExportadora() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_categoria.php")
+    fetch("../models/obtener_categoria.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaCategoria tbody");
@@ -74,10 +74,10 @@ function cargarTabla() {
                     <td>${item.nombre_exportadora || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarCategoria(${item.id_categoria}, '${item.codigo_categoria}', '${item.nombre_categoria}', '${item.id_especie || ''}', '${item.id_exportadora || ''}')">
-                            ✏️ Editar
+                            âœï¸ Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarCategoria(${item.id_categoria})">
-                            🗑️ Eliminar
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -94,14 +94,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formCategoria"));
     formData.append("accion", accion);
 
-    fetch("../procesar_categoria.php", {
+    fetch("../controllers/procesar_categoria.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -118,12 +118,12 @@ function cargarCategoria(id, codigo, nombre, id_especie, id_exportadora) {
 }
 
 function eliminarCategoria(id) {
-    if (confirm("¿Está seguro de eliminar esta categoría?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar esta categorÃ­a?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_categoria", id);
 
-        fetch("../procesar_categoria.php", {
+        fetch("../controllers/procesar_categoria.php", {
             method: "POST",
             body: formData
         })
@@ -140,3 +140,5 @@ function limpiarFormulario() {
     document.getElementById("formCategoria").reset();
     document.getElementById("id_categoria").value = "";
 }
+
+

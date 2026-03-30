@@ -15,9 +15,11 @@
                         Proceso
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/instructivo/app/Procesos/instructivo.php">Creación de Instructivo</a></li>
+                        <li><a class="dropdown-item" href="/instructivo/app/Procesos/crear_instructivo.php">Crear Instructivo</a></li>
+                        <li><a class="dropdown-item" href="/instructivo/app/Procesos/editar_instructivo.php">Editar Instructivo</a></li>
+                        <li><a class="dropdown-item" href="/instructivo/app/Procesos/exportar_instructivo.php">Exportar Instructivo</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/instructivo/app/Procesos/Pedidos.php">Agregar Pedidos</a></li>
-                        <li><a class="dropdown-item" href="/instructivo/app/Procesos/exportar_instructivo.php">Descargar Instructivo</a></li>
                         <li><a class="dropdown-item" href="/instructivo/app/Procesos/copiar_instructivo.php">Copiar Instructivo</a></li>
                         <li><a class="dropdown-item" href="/instructivo/app/Procesos/mostrar_instructivo.php">Desplegar Información</a></li>
                     </ul>

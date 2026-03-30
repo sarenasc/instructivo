@@ -1,4 +1,4 @@
-let listasSelect = {};
+﻿let listasSelect = {};
 
 // Detectar campos clave
 const detectarCampos = (lista) => {
@@ -75,7 +75,7 @@ function agruparPorCamposComunes(data) {
 
 // Mostrar modal
 function mostrarModalVersion(idInstructivo, version) {
-  $.getJSON('../obtener_cabecera_por_version.php', { id_instructivo: idInstructivo, version: version }, function (data) {
+  $.getJSON('../models/obtener_cabecera_por_version.php', { id_instructivo: idInstructivo, version: version }, function (data) {
     $('#readonlyExportadora').val(data.exportadora);
     $('#readonlyEspecie').val(data.especie);
     $('#readonlyTurno').val(data.turno);
@@ -85,7 +85,7 @@ function mostrarModalVersion(idInstructivo, version) {
     const idExportadora = data.exportadora_id;
     const idEspecie = data.especie_id;
 
-    $.getJSON('../obtener_listas_detalle.php', {
+    $.getJSON('../models/obtener_listas_detalle.php', {
       id_exportadora: idExportadora,
       id_especie: idEspecie
     }, function (listas) {
@@ -105,7 +105,7 @@ function mostrarModalVersion(idInstructivo, version) {
       }
 
       $('#tablaDetalleEditable tbody').empty();
-      $.getJSON('../obtener_detalle_por_version.php', {
+      $.getJSON('../models/obtener_detalle_por_version.php', {
         id_instructivo: idInstructivo,
         version: version
       }, function (response) {
@@ -154,7 +154,7 @@ function agregarFilaDetalle(data = {}) {
   $('#tablaDetalleEditable tbody').append(fila);
 }
 
-// Botón agregar fila
+// BotÃ³n agregar fila
 $('#btnAgregarFila').on('click', function () {
   agregarFilaDetalle();
 });
@@ -177,7 +177,7 @@ $(document).on('change', '.embalaje', function () {
   $fila.find('.altura').html(opciones);
 });
 
-// Guardar versión
+// Guardar versiÃ³n
 $('#btnGuardarNuevaVersion').on('click', function () {
   const id = $('#selectInstructivo').val();
   const detalle = [];
@@ -207,16 +207,17 @@ $('#btnGuardarNuevaVersion').on('click', function () {
   });
 
   $.ajax({
-    url: '../procesar_nueva_version.php',
+    url: '../controllers/procesar_nueva_version.php',
     method: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({ id_instructivo: id, detalle: detalle }),
     success: function () {
-      alert('Nueva versión guardada con éxito');
+      alert('Nueva versiÃ³n guardada con Ã©xito');
       bootstrap.Modal.getInstance(document.getElementById('modalEditarVersion')).hide();
     },
     error: function () {
-      alert('Error al guardar la nueva versión');
+      alert('Error al guardar la nueva versiÃ³n');
     }
   });
 });
+

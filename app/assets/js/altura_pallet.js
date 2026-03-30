@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
     const btnGuardar = document.getElementById("btnGuardar");
     const btnModificar = document.getElementById("btnModificar");
     const btnEliminar = document.getElementById("btnEliminar");
@@ -11,14 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cargar select de embalajes
     function cargarEmbalajes() {
-    fetch("../listar_embalaje.php")
+    fetch("../controllers/listar_embalaje.php")
         .then(response => response.json())
         .then(data => {
             const select = document.getElementById("id_embalaje");
             select.innerHTML = '<option value="">Seleccione un embalaje</option>';
             data.forEach(emb => {
                 const option = document.createElement("option");
-                option.value = emb.id; // Asegúrate de usar el ID real
+                option.value = emb.id; // AsegÃºrate de usar el ID real
                 option.textContent = `${emb.id} - ${emb.embalaje}`;
                 select.appendChild(option);
             });
@@ -30,13 +30,13 @@ function limpiarFormulario() {
     document.getElementById("id_embalaje").value = "";
     document.getElementById("altura").value = "";
     document.getElementById("cajas").value = "";
-    idSeleccionado = null; // Resetear la variable global si estás usando una
+    idSeleccionado = null; // Resetear la variable global si estÃ¡s usando una
 }
 
 
-    // Función para cargar tabla
+    // FunciÃ³n para cargar tabla
     function cargarTabla() {
-        fetch("../listar_altura_pallet.php")
+        fetch("../controllers/listar_altura_pallet.php")
             .then(res => res.json())
             .then(data => {
                 tabla.innerHTML = data.map(row => `
@@ -71,10 +71,10 @@ function limpiarFormulario() {
     const alturaValor = altura.value;
     const cajasValor = cajas.value;
 
-    // Validar que los valores no sean vacíos si es necesario
+    // Validar que los valores no sean vacÃ­os si es necesario
     console.log("Datos a enviar:", { id, id_embalaje, alturaValor, cajasValor });
 
-    fetch("../guardar_altura_pallet.php", {
+    fetch("../controllers/guardar_altura_pallet.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -136,3 +136,4 @@ function limpiarFormulario() {
             });
     });
 });
+

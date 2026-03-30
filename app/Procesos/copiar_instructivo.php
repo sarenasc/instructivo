@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $titulo_pagina = 'Copiar Instructivo';
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -24,9 +24,9 @@ require_once __DIR__ . '/../includes/header.php';
             </select>
           </div>
           <div class="mb-3">
-            <label for="version" class="form-label">Versión</label>
+            <label for="version" class="form-label">VersiÃ³n</label>
             <select id="version" name="version" class="form-select" disabled>
-              <option value="">Seleccione una versión</option>
+              <option value="">Seleccione una versiÃ³n</option>
             </select>
           </div>
         </form>
@@ -69,3 +69,4 @@ require_once __DIR__ . '/../includes/header.php';
 $scripts_extra = '<script src="../assets/js/copiar_instructivo.js"></script>';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

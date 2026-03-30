@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarTabla();
 
     document.getElementById("btnGuardar").addEventListener("click", function () {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarTabla() {
-    fetch("../obtener_exportadoras.php")
+    fetch("../models/obtener_exportadoras.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaExportadora tbody");
@@ -38,10 +38,10 @@ function cargarTabla() {
                     <td>${item.nombre_exportadora}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarExportadora(${item.id_exportadora}, '${item.cod_exportadora}', '${item.nombre_exportadora}')">
-                            ✏️ Editar
+                            âœï¸ Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarExportadora(${item.id_exportadora})">
-                            🗑️ Eliminar
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -58,14 +58,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formExportadora"));
     formData.append("accion", accion);
 
-    fetch("../procesar_exportadora.php", {
+    fetch("../controllers/procesar_exportadora.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -80,12 +80,12 @@ function cargarExportadora(id, codigo, nombre) {
 }
 
 function eliminarExportadora(id) {
-    if (confirm("¿Está seguro de eliminar esta exportadora?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar esta exportadora?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_exportadora", id);
 
-        fetch("../procesar_exportadora.php", {
+        fetch("../controllers/procesar_exportadora.php", {
             method: "POST",
             body: formData
         })
@@ -102,3 +102,4 @@ function limpiarFormulario() {
     document.getElementById("formExportadora").reset();
     document.getElementById("id_exportadora").value = "";
 }
+

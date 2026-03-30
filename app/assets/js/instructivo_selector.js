@@ -1,6 +1,6 @@
-$(document).ready(function () {
+﻿$(document).ready(function () {
   // Cargar instructivos al iniciar
-  $.getJSON('../obtener_instructivo.php', function (response) {   
+  $.getJSON('../models/obtener_instructivo.php', function (response) {   
     if (response.success) {
       $('#selectInstructivo').empty().append('<option value="">Seleccione un instructivo</option>');
       response.data.forEach(function (item) {
@@ -22,10 +22,10 @@ $(document).ready(function () {
   $('#selectInstructivo').on('change', function () {
     var idInstructivo = $(this).val();
    
-    $('#selectVersion').empty().append('<option value="">Seleccione una versión</option>');
+    $('#selectVersion').empty().append('<option value="">Seleccione una versiÃ³n</option>');
 
     if (idInstructivo) {
-      $.getJSON('../obtener_version.php', { id_instructivo: idInstructivo }, function (response) {
+      $.getJSON('../models/obtener_version.php', { id_instructivo: idInstructivo }, function (response) {
         if (response.success) {
          // Usamos un Set para evitar versiones duplicadas
 const versionesUnicas = new Set();
@@ -38,7 +38,7 @@ versionesUnicas.forEach(function (version) {
   $('#selectVersion').append(
     $('<option>', {
       value: version,
-      text: 'Versión ' + version
+      text: 'VersiÃ³n ' + version
     })
   );
 });
@@ -50,7 +50,7 @@ versionesUnicas.forEach(function (version) {
     }
   });
 
-  // Cuando se elige una versión, cargar cabecera y detalle en modal (si tienes esa lógica)
+  // Cuando se elige una versiÃ³n, cargar cabecera y detalle en modal (si tienes esa lÃ³gica)
   $('#selectVersion').on('change', function () {
   const idInstructivo = $('#selectInstructivo').val();
   const version = $(this).val();
@@ -60,4 +60,5 @@ versionesUnicas.forEach(function (version) {
   }
 });
 });
+
 

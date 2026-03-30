@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarEmbalajes();
     cargarTabla();
 
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarEmbalajes() {
-    fetch("../obtener_embalajes.php")
+    fetch("../models/obtener_embalajes.php")
         .then(r => r.json())
         .then(data => {
             const select = document.getElementById("id_embalaje");
@@ -25,7 +25,7 @@ function cargarEmbalajes() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_altura_pallet.php")
+    fetch("../models/obtener_altura_pallet.php")
         .then(r => r.json())
         .then(data => {
             const tbody = document.querySelector("#tablaAlturas tbody");
@@ -57,11 +57,11 @@ function procesar(accion) {
     const fd = new FormData(document.getElementById("formAltura"));
     fd.append("accion", accion);
     
-    fetch("../procesar_altura_pallet.php", {method: "POST", body: fd})
+    fetch("../controllers/procesar_altura_pallet.php", {method: "POST", body: fd})
         .then(r => r.text())
         .then(d => {
             alert(d);
-            if (d.includes("éxito") || d.includes("correctamente") || d.includes("Eliminado")) {
+            if (d.includes("Ã©xito") || d.includes("correctamente") || d.includes("Eliminado")) {
                 limpiar();
                 cargarTabla();
                 cargarEmbalajes();
@@ -72,13 +72,13 @@ function procesar(accion) {
 
 function eliminar() {
     const id = document.getElementById("id_altura_pallet").value;
-    if (!id || !confirm("¿Eliminar este registro?")) return;
+    if (!id || !confirm("Â¿Eliminar este registro?")) return;
     
     const fd = new FormData();
     fd.append("accion", "eliminar");
     fd.append("id_altura_pallet", id);
     
-    fetch("../procesar_altura_pallet.php", {method: "POST", body: fd})
+    fetch("../controllers/procesar_altura_pallet.php", {method: "POST", body: fd})
         .then(r => r.text())
         .then(d => {
             alert(d);
@@ -92,3 +92,4 @@ function limpiar() {
     document.getElementById("formAltura").reset();
     document.getElementById("id_altura_pallet").value = "";
 }
+

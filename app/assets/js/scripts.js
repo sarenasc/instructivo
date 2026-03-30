@@ -1,6 +1,6 @@
-const URL = "http://192.168.19.4:3003";
+﻿const URL = "http://192.168.19.4:3003";
 
-// ✅ Cargar exportadoras
+// âœ… Cargar exportadoras
 async function cargarExportadoras() {
     const res = await fetch(`${URL}/api/exportadoras`);
     const data = await res.json();
@@ -11,7 +11,7 @@ async function cargarExportadoras() {
     });
 }
 
-// ✅ Al seleccionar exportadora → cargar instructivos
+// âœ… Al seleccionar exportadora â†’ cargar instructivos
 document.getElementById('exportadoraSelect').addEventListener('change', async (e) => {
     const idExp = e.target.value;
     const res = await fetch(`${URL}/api/instructivos/${idExp}`);
@@ -24,7 +24,7 @@ document.getElementById('exportadoraSelect').addEventListener('change', async (e
     });
 });
 
-// ✅ Al seleccionar instructivo → cargar versiones
+// âœ… Al seleccionar instructivo â†’ cargar versiones
 document.getElementById('instructivoSelect').addEventListener('change', async (e) => {
     const id = e.target.value;
     const res = await fetch(`${URL}/api/versiones/${id}`);
@@ -36,7 +36,7 @@ document.getElementById('instructivoSelect').addEventListener('change', async (e
     });
 });
 
-// ✅ Al seleccionar versión → mostrar detalle
+// âœ… Al seleccionar versiÃ³n â†’ mostrar detalle
 document.getElementById('versionSelect').addEventListener('change', async () => {
     const id_instructivo = document.getElementById('instructivoSelect').value;
     const version = document.getElementById('versionSelect').value;
@@ -68,5 +68,6 @@ document.getElementById('versionSelect').addEventListener('change', async () => 
 });
 
 
-// ✅ Ejecutar al cargar página
+// âœ… Ejecutar al cargar pÃ¡gina
 cargarExportadoras();
+

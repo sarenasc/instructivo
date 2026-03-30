@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarExportadora();
     cargarTabla();
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarExportadora() {
-    fetch("../obtener_exportadoras.php")
+    fetch("../models/obtener_exportadoras.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("exportadora");
@@ -36,7 +36,7 @@ function cargarExportadora() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_etiquetas.php")
+    fetch("../models/obtener_etiquetas.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaEtiqueta tbody");
@@ -56,10 +56,10 @@ function cargarTabla() {
                     <td>${item.nombre_exportadora || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarEtiqueta(${item.id_etiqueta}, '${item.codigo_etiqueta}', '${item.nombre_etiqueta}', '${item.id_exportadora || ''}')">
-                            ✏️ Editar
+                            âœï¸ Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarEtiqueta(${item.id_etiqueta})">
-                            🗑️ Eliminar
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -76,14 +76,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formEtiqueta"));
     formData.append("accion", accion);
 
-    fetch("../procesar_etiqueta.php", {
+    fetch("../controllers/procesar_etiqueta.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -99,12 +99,12 @@ function cargarEtiqueta(id, codigo, nombre, id_exportadora) {
 }
 
 function eliminarEtiqueta(id) {
-    if (confirm("¿Está seguro de eliminar esta etiqueta?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar esta etiqueta?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_etiqueta", id);
 
-        fetch("../procesar_etiqueta.php", {
+        fetch("../controllers/procesar_etiqueta.php", {
             method: "POST",
             body: formData
         })
@@ -121,3 +121,4 @@ function limpiarFormulario() {
     document.getElementById("formEtiqueta").reset();
     document.getElementById("id_etiqueta").value = "";
 }
+

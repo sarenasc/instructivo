@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $titulo_pagina = 'Exportar Instructivo';
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -24,3 +24,4 @@ require_once __DIR__ . '/../includes/header.php';
 $scripts_extra = '<script src="../assets/js/exportar_instructivo.js"></script>';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

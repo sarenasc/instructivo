@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup - Tabla Detalle por Calibre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .tabla-calibres-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Cinta de calibres */
+        .cinta-calibres {
+            display: flex;
+            gap: 4px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .calibre-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .calibre-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .calibre-badge.activo {
+            ring: 3px solid rgba(0,0,0,0.2);
+        }
+        
+        /* Colores por calibre */
+        .calibre-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .calibre-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .calibre-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .calibre-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .calibre-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .calibre-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .calibre-7 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+        .calibre-8 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #333; }
+        
+        /* Tabla */
+        .tabla-info {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .tabla-info th {
+            background: #667eea;
+            color: white;
+            padding: 12px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: none;
+        }
+        
+        .tabla-info th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+        
+        .tabla-info th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        
+        .tabla-info td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        
+        .tabla-info tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Columna de calibres en tabla */
+        .td-calibres {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .td-calibres .mini-calibre {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Botón ver más */
+        .btn-ver-mas {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn-ver-mas:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Modal */
+        .modal-calibres .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+        
+        .modal-calibres .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .modal-calibres .modal-body {
+            padding: 0;
+        }
+        
+        /* Tarjeta de detalle */
+        .detalle-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .detalle-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .detalle-pedido {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .detalle-variedad {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .detalle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        
+        .detalle-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .detalle-item-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .detalle-item-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* Leyenda */
+        .leyenda {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .leyenda-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <h2 class="mb-4">📋 Mockup - Tabla Detalle por Calibre</h2>
+    
+    <!-- OPCIÓN 1: Cinta de Calibres Arriba -->
+    <div class="tabla-calibres-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">🎯 Detalle por Calibre - Vista Compacta</h5>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetalle">
+                👁️ Ver en Pantalla Completa
+            </button>
+        </div>
+        
+        <!-- Cinta de Calibres -->
+        <div class="cinta-calibres">
+            <div class="calibre-badge calibre-1">Calibre 20</div>
+            <div class="calibre-badge calibre-2">Calibre 22</div>
+            <div class="calibre-badge calibre-3">Calibre 23</div>
+            <div class="calibre-badge calibre-4">Calibre 25</div>
+            <div class="calibre-badge calibre-5">Calibre 27</div>
+            <div class="calibre-badge calibre-6">Calibre 30</div>
+        </div>
+        
+        <!-- Leyenda -->
+        <div class="leyenda">
+            <div class="leyenda-item">
+                <div class="leyenda-color calibre-1"></div>
+                <span>Pedido 1044</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color calibre-2"></div>
+                <span>Pedido 1232</span>
+            </div>
+            <div class="leyenda-item">
+                <div class="leyenda-color calibre-3"></div>
+                <span>Pedido 1044</span>
+            </div>
+        </div>
+        
+        <!-- Tabla -->
+        <table class="tabla-info mt-3">
+            <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Variedad</th>
+                    <th>Embalaje</th>
+                    <th>Etiqueta</th>
+                    <th>Calibres</th>
+                    <th>Categoría</th>
+                    <th>PLU</th>
+                    <th>Destino</th>
+                    <th>Cantidad</th>
+                    <th>Altura</th>
+                    <th>Obs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1044</strong></td>
+                    <td>Golden</td>
+                    <td>KP10PGE</td>
+                    <td>Don Pablo</td>
+                    <td>
+                        <div class="td-calibres">
+                            <span class="mini-calibre calibre-1">20</span>
+                            <span class="mini-calibre calibre-3">23</span>
+                            <span class="mini-calibre calibre-4">25</span>
+                        </div>
+                    </td>
+                    <td>CAT1</td>
+                    <td>4014</td>
+                    <td>Rusia</td>
+                    <td>1000</td>
+                    <td>10 cm</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><strong>1232</strong></td>
+                    <td>Yellow</td>
+                    <td>KP5PG</td>
+                    <td>Agua Santa</td>
+                    <td>
+                        <div class="td-calibres">
+                            <span class="mini-calibre calibre-2">22</span>
+                            <span class="mini-calibre calibre-5">27</span>
+                        </div>
+                    </td>
+                    <td>CAT2</td>
+                    <td>4015</td>
+                    <td>EEUU</td>
+                    <td>500</td>
+                    <td>8 cm</td>
+                    <td>Frágil</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- OPCIÓN 2: Tarjetas -->
+    <div class="tabla-calibres-container">
+        <h5 class="mb-3">🎴 Detalle por Calibre - Vista Tarjetas</h5>
+        
+        <div class="detalle-card">
+            <div class="detalle-card-header">
+                <div>
+                    <div class="detalle-pedido">📦 Pedido 1044</div>
+                    <div class="detalle-variedad">🏷️ Variedad: Golden</div>
+                </div>
+                <button class="btn-ver-mas" data-bs-toggle="modal" data-bs-target="#modalDetalle">
+                    👁️ Ver Detalle
+                </button>
+            </div>
+            
+            <div class="detalle-grid">
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📦 Embalaje</div>
+                    <div class="detalle-item-value">KP10PGE</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">🏷️ Etiqueta</div>
+                    <div class="detalle-item-value">Don Pablo</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📏 Calibres</div>
+                    <div class="detalle-item-value">
+                        <span class="mini-calibre calibre-1">20</span>
+                        <span class="mini-calibre calibre-3">23</span>
+                        <span class="mini-calibre calibre-4">25</span>
+                    </div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📊 Categoría</div>
+                    <div class="detalle-item-value">CAT1</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">🔢 PLU</div>
+                    <div class="detalle-item-value">4014</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">🌍 Destino</div>
+                    <div class="detalle-item-value">Rusia</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📈 Cantidad</div>
+                    <div class="detalle-item-value">1000 cajas</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📐 Altura</div>
+                    <div class="detalle-item-value">10 cm - 100 cajas</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📝 Observación</div>
+                    <div class="detalle-item-value">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detalle-card">
+            <div class="detalle-card-header">
+                <div>
+                    <div class="detalle-pedido">📦 Pedido 1232</div>
+                    <div class="detalle-variedad">🏷️ Variedad: Yellow</div>
+                </div>
+                <button class="btn-ver-mas" data-bs-toggle="modal" data-bs-target="#modalDetalle">
+                    👁️ Ver Detalle
+                </button>
+            </div>
+            
+            <div class="detalle-grid">
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📦 Embalaje</div>
+                    <div class="detalle-item-value">KP5PG</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">🏷️ Etiqueta</div>
+                    <div class="detalle-item-value">Agua Santa</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📏 Calibres</div>
+                    <div class="detalle-item-value">
+                        <span class="mini-calibre calibre-2">22</span>
+                        <span class="mini-calibre calibre-5">27</span>
+                    </div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📊 Categoría</div>
+                    <div class="detalle-item-value">CAT2</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">🔢 PLU</div>
+                    <div class="detalle-item-value">4015</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">🌍 Destino</div>
+                    <div class="detalle-item-value">EEUU</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📈 Cantidad</div>
+                    <div class="detalle-item-value">500 cajas</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📐 Altura</div>
+                    <div class="detalle-item-value">8 cm - 80 cajas</div>
+                </div>
+                <div class="detalle-item">
+                    <div class="detalle-item-label">📝 Observación</div>
+                    <div class="detalle-item-value">Frágil</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pantalla Completa -->
+<div class="modal fade modal-calibres" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🔍 Detalle Completo de Calibres</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Cinta de calibres grande -->
+                <div class="cinta-calibres mb-4">
+                    <div class="calibre-badge calibre-1" style="font-size: 16px; padding: 12px 24px;">Calibre 20</div>
+                    <div class="calibre-badge calibre-2" style="font-size: 16px; padding: 12px 24px;">Calibre 22</div>
+                    <div class="calibre-badge calibre-3" style="font-size: 16px; padding: 12px 24px;">Calibre 23</div>
+                    <div class="calibre-badge calibre-4" style="font-size: 16px; padding: 12px 24px;">Calibre 25</div>
+                    <div class="calibre-badge calibre-5" style="font-size: 16px; padding: 12px 24px;">Calibre 27</div>
+                    <div class="calibre-badge calibre-6" style="font-size: 16px; padding: 12px 24px;">Calibre 30</div>
+                </div>
+                
+                <!-- Tarjetas detalladas -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="detalle-card h-100">
+                            <div class="detalle-card-header">
+                                <div>
+                                    <div class="detalle-pedido">📦 Pedido 1044</div>
+                                    <div class="detalle-variedad">🏷️ Variedad: Golden</div>
+                                </div>
+                            </div>
+                            <div class="detalle-grid">
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📦 Embalaje</div>
+                                    <div class="detalle-item-value">KP10PGE</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">🏷️ Etiqueta</div>
+                                    <div class="detalle-item-value">Don Pablo</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📏 Calibres</div>
+                                    <div class="detalle-item-value">
+                                        <span class="mini-calibre calibre-1">20</span>
+                                        <span class="mini-calibre calibre-3">23</span>
+                                        <span class="mini-calibre calibre-4">25</span>
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📊 Categoría</div>
+                                    <div class="detalle-item-value">CAT1</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">🔢 PLU</div>
+                                    <div class="detalle-item-value">4014</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">🌍 Destino</div>
+                                    <div class="detalle-item-value">Rusia</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📈 Cantidad</div>
+                                    <div class="detalle-item-value">1000 cajas</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📐 Altura</div>
+                                    <div class="detalle-item-value">10 cm - 100 cajas</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📝 Observación</div>
+                                    <div class="detalle-item-value">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="detalle-card h-100">
+                            <div class="detalle-card-header">
+                                <div>
+                                    <div class="detalle-pedido">📦 Pedido 1232</div>
+                                    <div class="detalle-variedad">🏷️ Variedad: Yellow</div>
+                                </div>
+                            </div>
+                            <div class="detalle-grid">
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📦 Embalaje</div>
+                                    <div class="detalle-item-value">KP5PG</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">🏷️ Etiqueta</div>
+                                    <div class="detalle-item-value">Agua Santa</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📏 Calibres</div>
+                                    <div class="detalle-item-value">
+                                        <span class="mini-calibre calibre-2">22</span>
+                                        <span class="mini-calibre calibre-5">27</span>
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📊 Categoría</div>
+                                    <div class="detalle-item-value">CAT2</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">🔢 PLU</div>
+                                    <div class="detalle-item-value">4015</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">🌍 Destino</div>
+                                    <div class="detalle-item-value">EEUU</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📈 Cantidad</div>
+                                    <div class="detalle-item-value">500 cajas</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📐 Altura</div>
+                                    <div class="detalle-item-value">8 cm - 80 cajas</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-item-label">📝 Observación</div>
+                                    <div class="detalle-item-value">Frágil</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

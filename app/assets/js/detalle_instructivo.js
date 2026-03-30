@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
   const formDetalle = document.getElementById("formDetalle");
 
   if (formDetalle) {
@@ -13,15 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Eliminar campo múltiple para procesar uno a uno
+      // Eliminar campo mÃºltiple para procesar uno a uno
       formData.delete("id_calibre[]");
 
-      // Enviar una petición por cada calibre
+      // Enviar una peticiÃ³n por cada calibre
       const requests = selectedCalibres.map(id_calibre => {
         const tempFormData = new FormData(formDetalle);
         tempFormData.append("id_calibre", id_calibre);
 
-        return fetch("../procesar_detalle_instructivo.php", {
+        return fetch("../controllers/procesar_detalle_instructivo.php", {
           method: "POST",
           body: tempFormData
         }).then(response => response.json());
@@ -54,4 +54,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 

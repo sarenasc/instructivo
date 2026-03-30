@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarEspecies();
     cargarTabla();
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarEspecies() {
-    fetch("../obtener_especies.php")
+    fetch("../services/api_especies.php")
         .then(response => response.json())
         .then(data => {
             let select = document.getElementById("especie");
@@ -36,7 +36,7 @@ function cargarEspecies() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_plus.php")
+    fetch("../models/obtener_plus.php")
         .then(response => response.json())
         .then(data => {
             let tbody = document.querySelector("#tablaPlu tbody");
@@ -56,10 +56,10 @@ function cargarTabla() {
                     <td>${item.especie || 'N/A'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="cargarPlu(${item.id_plu}, '${item.codigo_plu}', '${item.nombre_plu}', '${item.id_especie || ''}')">
-                            ✏️ Editar
+                            âœï¸ Editar
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="eliminarPlu(${item.id_plu})">
-                            🗑️ Eliminar
+                            ðŸ—‘ï¸ Eliminar
                         </button>
                     </td>
                 `;
@@ -76,14 +76,14 @@ function enviarFormulario(accion) {
     let formData = new FormData(document.getElementById("formPlu"));
     formData.append("accion", accion);
 
-    fetch("../procesar_plu.php", {
+    fetch("../controllers/procesar_plu.php", {
         method: "POST",
         body: formData
     })
     .then(response => response.text())
     .then(data => {
         alert(data);
-        if (data.includes("éxito") || data.includes("correctamente") || data.includes("Eliminado")) {
+        if (data.includes("Ã©xito") || data.includes("correctamente") || data.includes("Eliminado")) {
             limpiarFormulario();
             cargarTabla();
         }
@@ -99,12 +99,12 @@ function cargarPlu(id, codigo, nombre, id_especie) {
 }
 
 function eliminarPlu(id) {
-    if (confirm("¿Está seguro de eliminar este PLU?")) {
+    if (confirm("Â¿EstÃ¡ seguro de eliminar este PLU?")) {
         let formData = new FormData();
         formData.append("accion", "eliminar");
         formData.append("id_plu", id);
 
-        fetch("../procesar_plu.php", {
+        fetch("../controllers/procesar_plu.php", {
             method: "POST",
             body: formData
         })
@@ -121,3 +121,5 @@ function limpiarFormulario() {
     document.getElementById("formPlu").reset();
     document.getElementById("id_plu").value = "";
 }
+
+

@@ -1,5 +1,5 @@
-<?php
-$titulo_pagina = 'Gestión de Configuraciones';
+﻿<?php
+$titulo_pagina = 'GestiÃ³n de Configuraciones';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
@@ -11,7 +11,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <option value="">-- Selecciona --</option>
                 <option value="especies">Especie</option>
                 <option value="calibre">Calibre</option>
-                <option value="categoria">Categoría</option>
+                <option value="categoria">CategorÃ­a</option>
                 <option value="destino">Destino</option>
                 <option value="embalaje">Embalaje</option>
                 <option value="etiqueta">Etiqueta</option>
@@ -33,7 +33,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Se rellena dinámicamente -->
+                        <!-- Se rellena dinÃ¡micamente -->
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Guardar cambios</button>
@@ -55,3 +55,4 @@ $scripts_extra = '
 ';
 require_once __DIR__ . '/../includes/footer.php';
 ?>
+

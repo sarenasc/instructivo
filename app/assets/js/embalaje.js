@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     cargarEtiquetas();
     cargarEspecies();
     cargarExportadoras();
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function cargarEtiquetas() {
-    fetch("../obtener_etiquetas.php")
+    fetch("../models/obtener_etiquetas.php")
         .then(r => r.json())
         .then(data => {
             const select = document.getElementById("etiqueta");
@@ -27,7 +27,7 @@ function cargarEtiquetas() {
 }
 
 function cargarEspecies() {
-    fetch("../api_especies.php")
+    fetch("../services/api_especies.php")
         .then(r => r.json())
         .then(data => {
             const select = document.getElementById("especie");
@@ -43,7 +43,7 @@ function cargarEspecies() {
 }
 
 function cargarExportadoras() {
-    fetch("../obtener_exportadoras.php")
+    fetch("../models/obtener_exportadoras.php")
         .then(r => r.json())
         .then(data => {
             const select = document.getElementById("exportadora");
@@ -59,7 +59,7 @@ function cargarExportadoras() {
 }
 
 function cargarTabla() {
-    fetch("../obtener_embalajes.php")
+    fetch("../models/obtener_embalajes.php")
         .then(r => r.json())
         .then(data => {
             const tbody = document.querySelector("#tablaEmbalaje tbody");
@@ -81,8 +81,8 @@ function cargarTabla() {
                     <td>${item.especie || 'N/A'}</td>
                     <td>${item.Nombre_Exportadora || 'N/A'}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id_embalaje})">✏️ Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id_embalaje})">🗑️ Eliminar</button>
+                        <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id_embalaje})">âœï¸ Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id_embalaje})">ðŸ—‘ï¸ Eliminar</button>
                     </td>
                 `;
             });
@@ -95,7 +95,7 @@ function cargarTabla() {
 }
 
 function cargarEmbalaje(id) {
-    fetch(`../obtener_embalaje_por_id.php?id=${id}`)
+    fetch(`../models/obtener_embalaje_por_id.php?id=${id}`)
         .then(r => r.json())
         .then(data => {
             if (data) {
@@ -112,13 +112,13 @@ function cargarEmbalaje(id) {
 }
 
 function eliminarEmbalaje(id) {
-    if (!confirm("¿Eliminar este embalaje?")) return;
+    if (!confirm("Â¿Eliminar este embalaje?")) return;
     
     const fd = new FormData();
     fd.append("accion", "eliminar");
     fd.append("id_embalaje", id);
     
-    fetch("../procesar_embalaje.php", {method: "POST", body: fd})
+    fetch("../controllers/procesar_embalaje.php", {method: "POST", body: fd})
         .then(r => r.text())
         .then(d => {
             alert(d);
@@ -131,11 +131,11 @@ function procesar(accion) {
     const fd = new FormData(document.getElementById("formEmbalaje"));
     fd.append("accion", accion);
     
-    fetch("../procesar_embalaje.php", {method: "POST", body: fd})
+    fetch("../controllers/procesar_embalaje.php", {method: "POST", body: fd})
         .then(r => r.text())
         .then(d => {
             alert(d);
-            if (d.includes("éxito") || d.includes("correctamente") || d.includes("Eliminado")) {
+            if (d.includes("Ã©xito") || d.includes("correctamente") || d.includes("Eliminado")) {
                 limpiar();
                 cargarTabla();
                 cargarEtiquetas();
@@ -150,3 +150,4 @@ function limpiar() {
     document.getElementById("formEmbalaje").reset();
     document.getElementById("id_embalaje").value = "";
 }
+

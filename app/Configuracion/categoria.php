@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (!isset($_SESSION['id'])) {
     header("Location: ../index.php");
@@ -10,7 +10,7 @@ if (!isset($_SESSION['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Categorías</title>
+    <title>GestiÃ³n de CategorÃ­as</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -18,17 +18,17 @@ if (!isset($_SESSION['id'])) {
     <?php include '../includes/header.php'; ?>
 
     <div class="container mt-4">
-        <h2 class="mb-4">Gestión de Categorías</h2>
+        <h2 class="mb-4">GestiÃ³n de CategorÃ­as</h2>
         
         <form id="formCategoria" class="mb-4">
             <input type="hidden" id="id_categoria">
             <div class="row">
                 <div class="col-md-3">
-                    <label for="codigo_categoria" class="form-label">Código Categoría</label>
+                    <label for="codigo_categoria" class="form-label">CÃ³digo CategorÃ­a</label>
                     <input type="text" class="form-control" id="codigo_categoria" name="codigo_categoria" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="nombre_categoria" class="form-label">Nombre Categoría</label>
+                    <label for="nombre_categoria" class="form-label">Nombre CategorÃ­a</label>
                     <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required>
                 </div>
                 <div class="col-md-3">
@@ -52,13 +52,13 @@ if (!isset($_SESSION['id'])) {
             </div>
         </form>
 
-        <h4 class="mt-4">Categorías Registradas</h4>
+        <h4 class="mt-4">CategorÃ­as Registradas</h4>
         <div class="table-responsive">
             <table class="table table-bordered table-striped" id="tablaCategoria">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Código</th>
+                        <th>CÃ³digo</th>
                         <th>Nombre</th>
                         <th>Especie</th>
                         <th>Exportadora</th>
@@ -72,3 +72,4 @@ if (!isset($_SESSION['id'])) {
 
     <?php include '../includes/footer.php'; ?>
 <script src="../assets/js/categoria.js"></script>
+
