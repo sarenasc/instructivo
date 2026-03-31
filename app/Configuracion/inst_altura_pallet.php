@@ -14,7 +14,8 @@ require_once __DIR__ . '/../includes/header.php';
                 <input type="hidden" id="id_altura_pallet" name="id_altura_pallet">
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label for="id_embalaje" class="form-label">Embalaje</label>
+                        <label for="buscadorEmbalaje" class="form-label">Embalaje</label>
+                        <input type="text" class="form-control form-control-sm mb-1" id="buscadorEmbalaje" placeholder="Buscar embalaje...">
                         <select id="id_embalaje" class="form-select" name="id_embalaje" required>
                             <option value="">Cargando embalajes...</option>
                         </select>
@@ -41,13 +42,26 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Tabla de Registros -->
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Alturas de Pallet Registradas</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Alturas de Pallet Registradas</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text" class="form-control form-control-sm" id="buscadorAlturas" placeholder="Buscar..." style="width:220px;">
+                    <select class="form-select form-select-sm" id="porPaginaAlturas" style="width:90px;">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <small class="text-muted text-nowrap">por página</small>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="tablaAlturas">
                     <thead class="table-dark">
                         <tr>
                             <th>ID</th>
                             <th>Embalaje</th>
+                            <th>Especie</th>
                             <th>Altura</th>
                             <th>Cajas</th>
                             <th>Acciones</th>
@@ -55,10 +69,14 @@ require_once __DIR__ . '/../includes/header.php';
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5" class="text-center">Cargando registros...</td>
+                            <td colspan="6" class="text-center">Cargando registros...</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted" id="infoAlturas"></small>
+                <nav><ul class="pagination pagination-sm mb-0" id="paginacionAlturas"></ul></nav>
             </div>
         </div>
     </div>

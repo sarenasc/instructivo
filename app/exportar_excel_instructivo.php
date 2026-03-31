@@ -56,14 +56,14 @@ $sqlDet = "SELECT
     c.orden as Orden_Calibre,
     i.cantidad_pedido
 FROM inst_detalle_instructivo i
-INNER JOIN inst_embalaje e ON e.id = i.id_embalaje
-INNER JOIN inst_calibre c ON c.id = i.id_calibre
-INNER JOIN inst_categoria ca ON ca.id = i.id_categoria
-INNER JOIN inst_plu pl ON pl.id = i.id_plu
-INNER JOIN inst_destino d ON d.id = i.id_destino
-INNER JOIN inst_pallet p ON p.id = i.id_pallet
-INNER JOIN inst_etiqueta et ON et.id = i.id_etiqueta
-INNER JOIN inst_altura_pallet ap ON i.altura_pallet = ap.id
+LEFT JOIN inst_embalaje e ON e.id = i.id_embalaje
+LEFT JOIN inst_calibre c ON c.id = i.id_calibre
+LEFT JOIN inst_categoria ca ON ca.id = i.id_categoria
+LEFT JOIN inst_plu pl ON pl.id = i.id_plu
+LEFT JOIN inst_destino d ON d.id = i.id_destino
+LEFT JOIN inst_pallet p ON p.id = i.id_pallet
+LEFT JOIN inst_etiqueta et ON et.id = i.id_etiqueta
+LEFT JOIN inst_altura_pallet ap ON i.altura_pallet = ap.id
 WHERE i.id_cab_instructivo = ? AND i.version = ?
 ORDER BY Orden_Calibre ASC";
 

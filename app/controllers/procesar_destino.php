@@ -1,11 +1,9 @@
-﻿<?php
+<?php
 require_once("../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
 
-    print_r ($accion);
-    
     switch ($accion) {
         case 'guardar':
             guardar($conn);
@@ -17,31 +15,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             eliminar($conn);
             break;
         default:
-            echo "AcciÃ³n no vÃ¡lida";
+            echo "Acción no válida";
     }
 }
 
 function guardar($conn) {
     $codigo = $_POST['codigo_destino'] ?? '';
     $nombre = $_POST['nombre_destino'] ?? '';
-    
+
     if (empty($codigo) || empty($nombre)) {
-        echo "Error: CÃ³digo y nombre son obligatorios";
+        echo "Error: Código y nombre son obligatorios";
         return;
     }
-    
-    $checkSql = "SELECT COUNT(*) as total FROM inst_destino WHERE codigo_destino = '$codigo'";
-    $checkResult = sqlsrv_query($conn, $checkSql);
-    $checkRow = sqlsrv_fetch_array($checkResult, SQLSRV_FETCH_ASSOC);
-    
-    if ($checkRow['total'] > 0) {
-        echo "Error: Ya existe un destino con ese cÃ³digo";
+
+    $checkRow = sqlsrv_fetch_array(
+        sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM inst_destino WHERE cod_destino = ?", [$codigo]),
+        SQLSRV_FETCH_ASSOC
+    );
+    if ($checkRow && $checkRow['total'] > 0) {
+        echo "Error: Ya existe un destino con ese código";
         return;
     }
-    
-    $sql = "INSERT INTO inst_destino (codigo_destino, nombre_destino) VALUES ('$codigo', '$nombre')";
-    
-    if (sqlsrv_query($conn, $sql)) {
+
+    $stmt = sqlsrv_query($conn,
+        "INSERT INTO inst_destino (cod_destino, nombre_destino) VALUES (?, ?)",
+        [$codigo, $nombre]
+    );
+
+    if ($stmt) {
         echo "Destino guardado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -50,21 +51,30 @@ function guardar($conn) {
 }
 
 function modificar($conn) {
-    $id = $_POST['id_destino'] ?? null;
-    $codigo = $_POST['codigo_destino'] ?? '';
-    $nombre = $_POST['nombre_destino'] ?? '';
+    $id     = $_POST['id_destino']      ?? null;
+    $codigo = $_POST['codigo_destino']  ?? '';
+    $nombre = $_POST['nombre_destino']  ?? '';
 
-    print $id;
-    print $codigo;
-    print $nombre;
-    
     if (empty($id) || empty($codigo) || empty($nombre)) {
         echo "Error: Datos incompletos";
         return;
     }
-    
-    $sql = "UPDATE inst_destino SET cod_destino = '$codigo', nombre_destino = '$nombre' WHERE id = $id";
-    if (sqlsrv_query($conn, $sql)) {
+
+    $checkRow = sqlsrv_fetch_array(
+        sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM inst_destino WHERE cod_destino = ? AND id <> ?", [$codigo, $id]),
+        SQLSRV_FETCH_ASSOC
+    );
+    if ($checkRow && $checkRow['total'] > 0) {
+        echo "Error: Ya existe un destino con ese código";
+        return;
+    }
+
+    $stmt = sqlsrv_query($conn,
+        "UPDATE inst_destino SET cod_destino = ?, nombre_destino = ? WHERE id = ?",
+        [$codigo, $nombre, $id]
+    );
+
+    if ($stmt) {
         echo "Destino modificado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -74,15 +84,18 @@ function modificar($conn) {
 
 function eliminar($conn) {
     $id = $_POST['id_destino'] ?? null;
-    
+
     if (empty($id)) {
-        echo "Error: ID no vÃ¡lido";
+        echo "Error: ID no válido";
         return;
     }
-    
-    $sql = "DELETE FROM inst_destino WHERE id_destino = $id";
-    
-    if (sqlsrv_query($conn, $sql)) {
+
+    $stmt = sqlsrv_query($conn,
+        "DELETE FROM inst_destino WHERE id_destino = ?",
+        [$id]
+    );
+
+    if ($stmt) {
         echo "Destino eliminado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -90,4 +103,3 @@ function eliminar($conn) {
     }
 }
 ?>
-

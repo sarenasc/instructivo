@@ -33,11 +33,11 @@ function guardar($conn) {
     }
 
     $checkRow = sqlsrv_fetch_array(
-        sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM inst_embalaje WHERE Codigo_emb = ?", [$codigo]),
+        sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM inst_embalaje WHERE Codigo_emb = ? AND id_especie = ?", [$codigo, $id_especie]),
         SQLSRV_FETCH_ASSOC
     );
     if ($checkRow && $checkRow['total'] > 0) {
-        echo "Error: Ya existe un embalaje con ese código";
+        echo "Error: Ya existe un embalaje con ese código para la especie seleccionada";
         return;
     }
 
@@ -66,6 +66,15 @@ function modificar($conn) {
 
     if (empty($id) || empty($codigo) || empty($nombre)) {
         echo "Error: Datos incompletos";
+        return;
+    }
+
+    $checkRow = sqlsrv_fetch_array(
+        sqlsrv_query($conn, "SELECT COUNT(*) AS total FROM inst_embalaje WHERE Codigo_emb = ? AND id_especie = ? AND id <> ?", [$codigo, $id_especie, $id]),
+        SQLSRV_FETCH_ASSOC
+    );
+    if ($checkRow && $checkRow['total'] > 0) {
+        echo "Error: Ya existe un embalaje con ese código para la especie seleccionada";
         return;
     }
 

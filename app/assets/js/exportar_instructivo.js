@@ -87,10 +87,23 @@ function descargarExcel() {
   const id = document.getElementById('selectInstructivo').value;
   const version = document.getElementById('selectVersion').value;
   
-  //console.log('💾 Descargando Excel - ID:', id, 'Version:', version);
+  console.log('💾 Descargando Excel - ID:', id, 'Version:', version);
   
   if (id && version) {
     window.location.href = `../exportar_excel_instructivo.php?id_instructivo=${id}&version=${version}`;
+  } else {
+    alert("⚠️ Debe seleccionar un instructivo y versión.");
+  }
+}
+
+function descargarExcel2() {
+  const id = document.getElementById('selectInstructivo').value;
+  const version = document.getElementById('selectVersion').value;
+  
+  console.log('💾 Descargando Excel - ID:', id, 'Version:', version);
+  
+  if (id && version) {
+    window.location.href = `../exportar_excel_formato2.php?id_instructivo=${id}&version=${version}`;
   } else {
     alert("⚠️ Debe seleccionar un instructivo y versión.");
   }

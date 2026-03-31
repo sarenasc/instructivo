@@ -3,7 +3,7 @@ require_once("../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
-    
+
     switch ($accion) {
         case 'guardar':
             guardar($conn);
@@ -20,27 +20,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function guardar($conn) {
-    $codigo = $_POST['cod_pallet'] ?? '';
-    $descripcion = $_POST['descrip_pallet'] ?? '';
-    $id_exportadora = $_POST['id_exportadora'] ?? null;
-    
+    $codigo         = $_POST['cod_pallet']      ?? '';
+    $descripcion    = $_POST['descrip_pallet']  ?? '';
+    $id_exportadora = $_POST['id_exportadora']  ?? null;
+
     if (empty($codigo) || empty($descripcion)) {
         echo "Error: Código y descripción son obligatorios";
         return;
     }
-    
-    $checkSql = "SELECT COUNT(*) as total FROM inst_pallet WHERE cod_pallet = '$codigo'";
-    $checkResult = sqlsrv_query($conn, $checkSql);
-    $checkRow = sqlsrv_fetch_array($checkResult, SQLSRV_FETCH_ASSOC);
-    
-    if ($checkRow['total'] > 0) {
-        echo "Error: Ya existe un pallet con ese código";
+
+    $checkRow = sqlsrv_fetch_array(
+        sqlsrv_query($conn,
+            "SELECT COUNT(*) AS total FROM inst_pallet WHERE cod_pallet = ? AND id_exportadora = ?",
+            [$codigo, $id_exportadora]
+        ),
+        SQLSRV_FETCH_ASSOC
+    );
+    if ($checkRow && $checkRow['total'] > 0) {
+        echo "Error: Ya existe un pallet con ese código para la exportadora seleccionada";
         return;
     }
-    
-    $sql = "INSERT INTO inst_pallet (cod_pallet, descrip_pallet, id_exportadora) VALUES ('$codigo', '$descripcion', " . ($id_exportadora ?: 'NULL') . ")";
-    
-    if (sqlsrv_query($conn, $sql)) {
+
+    $stmt = sqlsrv_query($conn,
+        "INSERT INTO inst_pallet (cod_pallet, descrip_pallet, id_exportadora) VALUES (?, ?, ?)",
+        [$codigo, $descripcion, $id_exportadora ?: null]
+    );
+
+    if ($stmt) {
         echo "Pallet guardado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -49,19 +55,34 @@ function guardar($conn) {
 }
 
 function modificar($conn) {
-    $id = $_POST['id_pallet'] ?? null;
-    $codigo = $_POST['cod_pallet'] ?? '';
-    $descripcion = $_POST['descrip_pallet'] ?? '';
-    $id_exportadora = $_POST['id_exportadora'] ?? null;
-    
+    $id             = $_POST['id_pallet']       ?? null;
+    $codigo         = $_POST['cod_pallet']      ?? '';
+    $descripcion    = $_POST['descrip_pallet']  ?? '';
+    $id_exportadora = $_POST['id_exportadora']  ?? null;
+
     if (empty($id) || empty($codigo) || empty($descripcion)) {
         echo "Error: Datos incompletos";
         return;
     }
-    
-    $sql = "UPDATE inst_pallet SET cod_pallet = '$codigo', descrip_pallet = '$descripcion', id_exportadora = " . ($id_exportadora ?: 'NULL') . " WHERE id_pallet = $id";
-    
-    if (sqlsrv_query($conn, $sql)) {
+
+    $checkRow = sqlsrv_fetch_array(
+        sqlsrv_query($conn,
+            "SELECT COUNT(*) AS total FROM inst_pallet WHERE cod_pallet = ? AND id_exportadora = ? AND id_pallet <> ?",
+            [$codigo, $id_exportadora, $id]
+        ),
+        SQLSRV_FETCH_ASSOC
+    );
+    if ($checkRow && $checkRow['total'] > 0) {
+        echo "Error: Ya existe un pallet con ese código para la exportadora seleccionada";
+        return;
+    }
+
+    $stmt = sqlsrv_query($conn,
+        "UPDATE inst_pallet SET cod_pallet = ?, descrip_pallet = ?, id_exportadora = ? WHERE id_pallet = ?",
+        [$codigo, $descripcion, $id_exportadora ?: null, $id]
+    );
+
+    if ($stmt) {
         echo "Pallet modificado correctamente";
     } else {
         $errores = sqlsrv_errors();
@@ -71,15 +92,18 @@ function modificar($conn) {
 
 function eliminar($conn) {
     $id = $_POST['id_pallet'] ?? null;
-    
+
     if (empty($id)) {
         echo "Error: ID no válido";
         return;
     }
-    
-    $sql = "DELETE FROM inst_pallet WHERE id_pallet = $id";
-    
-    if (sqlsrv_query($conn, $sql)) {
+
+    $stmt = sqlsrv_query($conn,
+        "DELETE FROM inst_pallet WHERE id_pallet = ?",
+        [$id]
+    );
+
+    if ($stmt) {
         echo "Pallet eliminado correctamente";
     } else {
         $errores = sqlsrv_errors();

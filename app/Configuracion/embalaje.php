@@ -55,7 +55,19 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Tabla de Registros -->
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Registros Existentes</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Registros Existentes</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text" class="form-control form-control-sm" id="buscadorEmbalaje" placeholder="Buscar..." style="width:220px;">
+                    <select class="form-select form-select-sm" id="porPaginaEmbalaje" style="width:90px;">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <small class="text-muted text-nowrap">por página</small>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tablaEmbalaje">
                     <thead class="table-light">
@@ -76,6 +88,10 @@ require_once __DIR__ . '/../includes/header.php';
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted" id="infoEmbalaje"></small>
+                <nav><ul class="pagination pagination-sm mb-0" id="paginacionEmbalaje"></ul></nav>
             </div>
         </div>
     </div>

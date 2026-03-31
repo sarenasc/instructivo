@@ -1,4 +1,7 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿let todosLosEmbalajes = [];
+let paginaActual = 1;
+
+document.addEventListener("DOMContentLoaded", function () {
     cargarEtiquetas();
     cargarEspecies();
     cargarExportadoras();
@@ -6,8 +9,21 @@
 
     document.getElementById("btnGuardar").addEventListener("click", () => procesar("guardar"));
     document.getElementById("btnModificar").addEventListener("click", () => procesar("modificar"));
-    document.getElementById("btnEliminar").addEventListener("click", eliminar);
+    document.getElementById("btnEliminar").addEventListener("click", () => {
+        const id = document.getElementById("id_embalaje").value;
+        if (id) eliminarEmbalaje(id);
+        else alert("Seleccione un registro para eliminar.");
+    });
     document.getElementById("btnLimpiar").addEventListener("click", limpiar);
+
+    document.getElementById("buscadorEmbalaje").addEventListener("input", () => {
+        paginaActual = 1;
+        renderTabla();
+    });
+    document.getElementById("porPaginaEmbalaje").addEventListener("change", () => {
+        paginaActual = 1;
+        renderTabla();
+    });
 });
 
 function cargarEtiquetas() {
@@ -62,36 +78,98 @@ function cargarTabla() {
     fetch("../models/obtener_embalajes.php")
         .then(r => r.json())
         .then(data => {
-            const tbody = document.querySelector("#tablaEmbalaje tbody");
-            tbody.innerHTML = "";
-            
-            if (!data.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay registros</td></tr>';
-                return;
-            }
-            
-            data.forEach(item => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.codigo_embalaje}</td>
-                    <td>${item.nombre_embalaje}</td>
-                    <td>${item.peso_embalaje || 'N/A'}</td>
-                    <td>${item.nombre_etiqueta || 'N/A'}</td>
-                    <td>${item.especie || 'N/A'}</td>
-                    <td>${item.Nombre_Exportadora || 'N/A'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id})">Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id})">Eliminar</button>
-                    </td>
-                `;
-            });
+            todosLosEmbalajes = data;
+            paginaActual = 1;
+            renderTabla();
         })
         .catch(e => {
             console.error("Error cargando tabla:", e);
             const tbody = document.querySelector("#tablaEmbalaje tbody");
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error cargando datos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error cargando datos</td></tr>';
         });
+}
+
+function renderTabla() {
+    const busqueda = document.getElementById("buscadorEmbalaje").value.toLowerCase().trim();
+    const porPagina = parseInt(document.getElementById("porPaginaEmbalaje").value);
+    const tbody = document.querySelector("#tablaEmbalaje tbody");
+
+    const filtrados = todosLosEmbalajes.filter(item => {
+        return (
+            String(item.id).includes(busqueda) ||
+            (item.codigo_embalaje || "").toLowerCase().includes(busqueda) ||
+            (item.nombre_embalaje || "").toLowerCase().includes(busqueda) ||
+            (item.peso_embalaje || "").toString().toLowerCase().includes(busqueda) ||
+            (item.nombre_etiqueta || "").toLowerCase().includes(busqueda) ||
+            (item.especie || "").toLowerCase().includes(busqueda) ||
+            (item.Nombre_Exportadora || "").toLowerCase().includes(busqueda)
+        );
+    });
+
+    const totalPaginas = Math.max(1, Math.ceil(filtrados.length / porPagina));
+    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+    const inicio = (paginaActual - 1) * porPagina;
+    const pagina = filtrados.slice(inicio, inicio + porPagina);
+
+    tbody.innerHTML = "";
+    if (!pagina.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">No hay registros</td></tr>';
+    } else {
+        pagina.forEach(item => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.codigo_embalaje}</td>
+                <td>${item.nombre_embalaje}</td>
+                <td>${item.peso_embalaje || 'N/A'}</td>
+                <td>${item.nombre_etiqueta || 'N/A'}</td>
+                <td>${item.especie || 'N/A'}</td>
+                <td>${item.Nombre_Exportadora || 'N/A'}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="cargarEmbalaje(${item.id})">Editar</button>
+                    <button class="btn btn-sm btn-danger" onclick="eliminarEmbalaje(${item.id})">Eliminar</button>
+                </td>
+            `;
+        });
+    }
+
+    // Info
+    const desde = filtrados.length ? inicio + 1 : 0;
+    const hasta = Math.min(inicio + porPagina, filtrados.length);
+    document.getElementById("infoEmbalaje").textContent =
+        `Mostrando ${desde}–${hasta} de ${filtrados.length} registros${busqueda ? " (filtrados)" : ""}`;
+
+    // Paginación
+    const nav = document.getElementById("paginacionEmbalaje");
+    nav.innerHTML = "";
+
+    const crearLi = (texto, pagina, deshabilitado = false, activo = false) => {
+        const li = document.createElement("li");
+        li.className = `page-item${deshabilitado ? " disabled" : ""}${activo ? " active" : ""}`;
+        const a = document.createElement("a");
+        a.className = "page-link";
+        a.href = "#";
+        a.innerHTML = texto;
+        if (!deshabilitado && !activo) {
+            a.addEventListener("click", e => { e.preventDefault(); paginaActual = pagina; renderTabla(); });
+        }
+        li.appendChild(a);
+        return li;
+    };
+
+    nav.appendChild(crearLi("&laquo;", paginaActual - 1, paginaActual === 1));
+
+    const rango = 2;
+    for (let i = 1; i <= totalPaginas; i++) {
+        if (i === 1 || i === totalPaginas || (i >= paginaActual - rango && i <= paginaActual + rango)) {
+            nav.appendChild(crearLi(i, i, false, i === paginaActual));
+        } else if (i === paginaActual - rango - 1 || i === paginaActual + rango + 1) {
+            nav.appendChild(crearLi("…", i, true));
+        }
+    }
+
+    nav.appendChild(crearLi("&raquo;", paginaActual + 1, paginaActual === totalPaginas));
 }
 
 function cargarEmbalaje(id) {

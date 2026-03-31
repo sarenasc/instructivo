@@ -27,13 +27,17 @@ if (!isset($_SESSION['id'])) {
             <form id="formCalibre">
                 <input type="hidden" id="id_calibre" name="id_calibre">
                 <div class="row">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <label for="codigo_calibre" class="form-label">Codigo Calibre</label>
                         <input type="text" class="form-control" id="codigo_calibre" name="codigo_calibre" required>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <label for="nombre_calibre" class="form-label">Nombre Calibre</label>
                         <input type="text" class="form-control" id="nombre_calibre" name="nombre_calibre" required>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="orden" class="form-label">Orden</label>
+                        <input type="number" class="form-control" id="orden" name="orden">
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="especie" class="form-label">Especie</label>
@@ -55,7 +59,19 @@ if (!isset($_SESSION['id'])) {
     <!-- Tabla de Registros -->
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Registros Existentes</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Registros Existentes</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text" class="form-control form-control-sm" id="buscadorCalibre" placeholder="Buscar..." style="width:220px;">
+                    <select class="form-select form-select-sm" id="porPaginaCalibre" style="width:90px;">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <small class="text-muted text-nowrap">por página</small>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="tablaCalibres">
                     <thead class="table-light">
@@ -63,16 +79,21 @@ if (!isset($_SESSION['id'])) {
                             <th>ID</th>
                             <th>Codigo</th>
                             <th>Nombre</th>
+                            <th>Orden</th>
                             <th>Especie</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5" class="text-center">Cargando registros...</td>
+                            <td colspan="6" class="text-center">Cargando registros...</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted" id="infoCalibre"></small>
+                <nav><ul class="pagination pagination-sm mb-0" id="paginacionCalibre"></ul></nav>
             </div>
         </div>
     </div>

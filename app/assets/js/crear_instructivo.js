@@ -189,7 +189,7 @@ function cargarEmbalajes(id_exportadora, id_especie) {
                                 data.forEach(alt => {
                                     const texto = `${alt.altura} cm - ${alt.cajas} cajas`;
                                     console.log('✅ Agregando opción:', texto);
-                                    alturaSelect.innerHTML += `<option value="${alt.id}">${texto}</option>`;
+                                    alturaSelect.innerHTML += `<option value="${alt.id_altura_pallet}">${texto}</option>`;
                                 });
                                 console.log('🎉 Alturas cargadas:', data.length);
                             } else {

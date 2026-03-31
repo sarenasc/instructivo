@@ -61,10 +61,14 @@ try {
                 $pedido['cantidad'],
                 $pedido['prioridad'] ?? 1
             ];
-            sqlsrv_query($conn, $sql_ped, $params_ped);
+            $r = sqlsrv_query($conn, $sql_ped, $params_ped);
+            if ($r === false) {
+                $err = sqlsrv_errors();
+                throw new Exception('Error en pedido: ' . ($err ? $err[0]['message'] : 'desconocido'));
+            }
         }
     }
-    
+
     // 3. Insertar detalle con nueva versión
     if (!empty($detalle)) {
         $sql_det = "
@@ -75,52 +79,64 @@ try {
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
-        
+
         foreach ($detalle as $det) {
-            // Si hay múltiples calibres, crear un registro por cada uno
-            if (!empty($det['calibres'])) {
-                foreach ($det['calibres'] as $calibre) {
+            $calibres = $det['calibres'] ?? [];
+
+            // Normalizar altura_pallet: si viene null o vacío, dejar null
+            $altura = isset($det['altura_pallet']) && $det['altura_pallet'] !== '' ? (int)$det['altura_pallet'] : null;
+
+            if (!empty($calibres)) {
+                foreach ($calibres as $calibre) {
+                    $id_calibre = isset($calibre['id']) && $calibre['id'] !== '' ? (int)$calibre['id'] : null;
                     $params_det = [
                         $id_instructivo,
                         $nueva_version,
                         $det['numero_pedido'],
                         $det['cantidad'],
-                        $calibre['id'] ?? null,
-                        $det['id_embalaje'] ?? null,
+                        $id_calibre,
+                        $det['id_embalaje']  ?? null,
                         $det['id_categoria'] ?? null,
-                        $det['id_plu'] ?? null,
-                        $det['id_etiqueta'] ?? null,
-                        $det['id_pallet'] ?? null,
-                        $det['altura_pallet'] ?? null,
-                        $det['id_destino'] ?? null,
+                        $det['id_plu']       ?? null,
+                        $det['id_etiqueta']  ?? null,
+                        $det['id_pallet']    ?? null,
+                        $altura,
+                        $det['id_destino']   ?? null,
                         $det['variedad_etiquetada'] ?? '',
-                        $det['observacion'] ?? ''
+                        $det['observacion']  ?? ''
                     ];
-                    sqlsrv_query($conn, $sql_det, $params_det);
+                    $r = sqlsrv_query($conn, $sql_det, $params_det);
+                    if ($r === false) {
+                        $err = sqlsrv_errors();
+                        throw new Exception('Error en detalle (calibre ' . $id_calibre . '): ' . ($err ? $err[0]['message'] : 'desconocido'));
+                    }
                 }
             } else {
-                // Sin calibres específicos
                 $params_det = [
                     $id_instructivo,
                     $nueva_version,
                     $det['numero_pedido'],
                     $det['cantidad'],
                     null,
-                    $det['id_embalaje'] ?? null,
+                    $det['id_embalaje']  ?? null,
                     $det['id_categoria'] ?? null,
-                    $det['id_plu'] ?? null,
-                    $det['id_etiqueta'] ?? null,
-                    $det['id_pallet'] ?? null,
-                    $det['altura_pallet'] ?? null,
-                    $det['id_destino'] ?? null,
+                    $det['id_plu']       ?? null,
+                    $det['id_etiqueta']  ?? null,
+                    $det['id_pallet']    ?? null,
+                    $altura,
+                    $det['id_destino']   ?? null,
                     $det['variedad_etiquetada'] ?? '',
-                    $det['observacion'] ?? ''
+                    $det['observacion']  ?? ''
                 ];
-                sqlsrv_query($conn, $sql_det, $params_det);
+                $r = sqlsrv_query($conn, $sql_det, $params_det);
+                if ($r === false) {
+                    $err = sqlsrv_errors();
+                    throw new Exception('Error en detalle sin calibre: ' . ($err ? $err[0]['message'] : 'desconocido'));
+                }
             }
         }
     }
-    
+
     // Confirmar transacción
     sqlsrv_commit($conn);
     

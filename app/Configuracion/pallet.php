@@ -21,7 +21,7 @@ if (!isset($_SESSION['id'])) {
         <h2 class="mb-4">Gestion de Pallets</h2>
         
         <form id="formPallet" class="mb-4">
-            <input type="hidden" id="id_pallet">
+            <input type="hidden" id="id_pallet" name="id_pallet">
             <div class="row">
                 <div class="col-md-3">
                     <label for="cod_pallet" class="form-label">Codigo Pallet</label>
@@ -46,20 +46,40 @@ if (!isset($_SESSION['id'])) {
             </div>
         </form>
 
-        <h4 class="mt-4">Pallets Registrados</h4>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped" id="tablaPallet">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Codigo</th>
-                        <th>Descripcion</th>
-                        <th>Exportadora</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Pallets Registrados</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="text" class="form-control form-control-sm" id="buscadorPallet" placeholder="Buscar..." style="width:220px;">
+                        <select class="form-select form-select-sm" id="porPaginaPallet" style="width:90px;">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <small class="text-muted text-nowrap">por página</small>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="tablaPallet">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Codigo</th>
+                                <th>Descripcion</th>
+                                <th>Exportadora</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <small class="text-muted" id="infoPallet"></small>
+                    <nav><ul class="pagination pagination-sm mb-0" id="paginacionPallet"></ul></nav>
+                </div>
+            </div>
         </div>
     </div>
 

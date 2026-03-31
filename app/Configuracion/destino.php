@@ -40,19 +40,39 @@ if (!isset($_SESSION['id'])) {
             </div>
         </form>
 
-        <h4 class="mt-4">Destinos Registrados</h4>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped" id="tablaDestino">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Codigo</th>
-                        <th>Nombre</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Destinos Registrados</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="text" class="form-control form-control-sm" id="buscadorDestino" placeholder="Buscar..." style="width:220px;">
+                        <select class="form-select form-select-sm" id="porPaginaDestino" style="width:90px;">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <small class="text-muted text-nowrap">por página</small>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="tablaDestino">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Codigo</th>
+                                <th>Nombre</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <small class="text-muted" id="infoDestino"></small>
+                    <nav><ul class="pagination pagination-sm mb-0" id="paginacionDestino"></ul></nav>
+                </div>
+            </div>
         </div>
     </div>
 

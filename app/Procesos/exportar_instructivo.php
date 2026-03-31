@@ -18,6 +18,7 @@ require_once __DIR__ . '/../includes/header.php';
             
         </div>
         <button onclick="descargarExcel()">Descargar Excel</button>
+        <button onclick="descargarExcel2()">Descargar Formato 2</button>
     </div>
 
 <?php

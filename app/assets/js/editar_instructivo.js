@@ -318,7 +318,7 @@ async function cargarAlturaPallet() {
     selectAlt.innerHTML = '<option value="">Seleccione...</option>';
     alturas.forEach(alt => {
         const opt = document.createElement('option');
-        opt.value = alt.id;
+        opt.value = alt.id_altura_pallet;
         opt.textContent = alt.altura + ' cm - ' + alt.cajas + ' cajas';
         selectAlt.appendChild(opt);
     });
@@ -338,7 +338,7 @@ async function cargarAlturaPalletEnModal(idEmbalajeSeleccionado, idAlturaSelecci
     selectAlt.innerHTML = '<option value="">Seleccione...</option>';
     alturas.forEach(alt => {
         const opt = document.createElement('option');
-        opt.value = alt.id;
+        opt.value = alt.id_altura_pallet;
         opt.textContent = alt.altura + ' cm - ' + alt.cajas + ' cajas';
         selectAlt.appendChild(opt);
     });

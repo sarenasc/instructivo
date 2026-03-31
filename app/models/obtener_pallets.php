@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 // Obtener parámetro de filtro por exportadora
 $id_exportadora = $_GET['id_exportadora'] ?? null;
 
-$sql = "SELECT p.id, p.cod_pallet, p.Descrip_pallet as describ_pallet, 
+$sql = "SELECT p.id, p.cod_pallet, p.Descrip_pallet as descrip_pallet,
                p.id_exportadora, ex.Nombre_Exportadora as nombre_exportadora
         FROM inst_pallet p
         LEFT JOIN inst_exportadora ex ON p.id_exportadora = ex.id";
