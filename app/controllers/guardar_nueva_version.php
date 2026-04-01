@@ -16,9 +16,6 @@ if (!$data) {
 }
 
 $id_instructivo = $data['id_instructivo'] ?? null;
-$version_anterior = $data['version_anterior'] ?? 1;
-$nueva_version = $version_anterior + 1;
-
 $cabecera = $data['cabecera'] ?? null;
 $pedidos = $data['pedidos'] ?? [];
 $detalle = $data['detalle'] ?? [];
@@ -29,23 +26,37 @@ if (!$id_instructivo || !$cabecera) {
 }
 
 try {
+    // Obtener la versión máxima actual desde la BD
+    $sqlMaxVer = "SELECT MAX(version) as max_version FROM inst_detalle_instructivo WHERE id_cab_instructivo = ?";
+    $stmtMaxVer = sqlsrv_query($conn, $sqlMaxVer, [$id_instructivo]);
+    if (!$stmtMaxVer) {
+        throw new Exception('Error al obtener versión máxima');
+    }
+    $rowMaxVer = sqlsrv_fetch_array($stmtMaxVer, SQLSRV_FETCH_ASSOC);
+    $nueva_version = (int)($rowMaxVer['max_version'] ?? 0) + 1;
+
     // Iniciar transacción
     sqlsrv_begin_transaction($conn);
     
-    // 1. Insertar nueva cabecera (mismo id_instructivo, nueva fecha)
+    // 1. Actualizar cabecera existente
     $sql_cab = "
-        INSERT INTO inst_cab_instructivo (id_instructivo, id_exportadora, id_especie, fecha, turno, observacion)
-        VALUES (?, ?, ?, ?, ?, ?)
+        UPDATE inst_cab_instructivo
+        SET id_exportadora = ?, id_especie = ?, fecha = ?, turno = ?, observacion = ?
+        WHERE id_instructivo = ?
     ";
     $params_cab = [
-        $id_instructivo,
         $cabecera['id_exportadora'],
         $cabecera['id_especie'],
         $cabecera['fecha'],
         $cabecera['turno'],
-        $cabecera['observacion'] ?? ''
+        $cabecera['observacion'] ?? '',
+        $id_instructivo
     ];
-    sqlsrv_query($conn, $sql_cab, $params_cab);
+    $r_cab = sqlsrv_query($conn, $sql_cab, $params_cab);
+    if ($r_cab === false) {
+        $err = sqlsrv_errors();
+        throw new Exception('Error al actualizar cabecera: ' . ($err ? $err[0]['message'] : 'desconocido'));
+    }
     
     // 2. Insertar pedidos con nueva versión
     if (!empty($pedidos)) {

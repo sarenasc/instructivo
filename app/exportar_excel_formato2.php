@@ -21,8 +21,15 @@ if (!$id_instructivo || !$version) {
 }
 
 // --- Obtener cabecera ---
-$sqlCab = "SELECT TOP 1 cab.id_instructivo, cab.fecha, exp.nombre_exportadora, esp.especie as nombre_especie,
-                  det.var_etiquetada as variedad, det.version, cab.observacion, cab.turno
+$sqlCab = "SELECT TOP 1 cab.id_instructivo, cab.fecha,
+                  cab.id_exportadora AS id_exportadora,
+                  exp.nombre_exportadora AS nombre_exportadora,
+                  cab.id_especie AS id_especie,
+                  esp.especie AS nombre_especie,
+                  det.var_etiquetada AS variedad,
+                  det.version AS version,
+                  cab.observacion AS observacion,
+                  cab.turno AS turno
            FROM inst_cab_instructivo cab
            JOIN inst_exportadora exp ON exp.id = cab.id_exportadora
            JOIN especie esp ON esp.id_especie = cab.id_especie
@@ -51,22 +58,23 @@ $sqlDet = "SELECT
     d.nombre_destino,
     pl.plu,
     ca.nombre_categoria AS categoria,
+    i.id_categoria AS id_categoria,
     p.Descrip_pallet,
     i.altura_pallet,
-    CONCAT(ap.altura,'/',ap.cajas) as Altura,
+    CASE WHEN ap.id IS NOT NULL THEN CONCAT(ap.altura,'/',ap.cajas) ELSE NULL END as Altura,
     i.observacion,
     c.nombre_calibre,
     c.orden as Orden_Calibre,
     i.cantidad_pedido
 FROM inst_detalle_instructivo i
-INNER JOIN inst_embalaje e ON e.id = i.id_embalaje
-INNER JOIN inst_calibre c ON c.id = i.id_calibre
-INNER JOIN inst_categoria ca ON ca.id = i.id_categoria
-INNER JOIN inst_plu pl ON pl.id = i.id_plu
-INNER JOIN inst_destino d ON d.id = i.id_destino
-INNER JOIN inst_pallet p ON p.id = i.id_pallet
-INNER JOIN inst_etiqueta et ON et.id = i.id_etiqueta
-INNER JOIN inst_altura_pallet ap ON i.altura_pallet = ap.id
+LEFT JOIN inst_embalaje e ON e.id = i.id_embalaje
+LEFT JOIN inst_calibre c ON c.id = i.id_calibre
+LEFT JOIN inst_categoria ca ON ca.id = i.id_categoria
+LEFT JOIN inst_plu pl ON pl.id = i.id_plu
+LEFT JOIN inst_destino d ON d.id = i.id_destino
+LEFT JOIN inst_pallet p ON p.id = i.id_pallet
+LEFT JOIN inst_etiqueta et ON et.id = i.id_etiqueta
+LEFT JOIN inst_altura_pallet ap ON i.altura_pallet = ap.id
 WHERE i.id_cab_instructivo = ? AND i.version = ?
 ORDER BY i.numero_pedido ASC, c.orden ASC";
 
@@ -114,6 +122,7 @@ foreach ($agrupadoPorPedido as $pedido => $filas) {
                 'destino' => $row['nombre_destino'],
                 'plu' => $row['plu'],
                 'categoria' => $row['categoria'],
+                'id_categoria' => $row['id_categoria'],
                 'pallet' => $row['Descrip_pallet'],
                 'var_etiquetada' => $row['var_etiquetada'],
                 'altura_pallet' => $row['altura_pallet'],
@@ -149,6 +158,35 @@ if ($stmtCant !== false) {
 asort($calibres);
 $calibres = array_keys($calibres);
 
+// --- Agrupaciones de calibres desde BD ---
+// $mapaGruposPorCat[id_categoria][nombre_calibre] = nombre_grupo
+$mapaGruposPorCat = [];
+$mapaGrupos       = []; // calibre => grupo (para $tieneAgrupaciones y fila de headers)
+$id_especie_cab     = $cabecera['id_especie']     ?? null;
+$id_exportadora_cab = $cabecera['id_exportadora'] ?? null;
+if ($id_especie_cab && $id_exportadora_cab) {
+    $sqlAgrup = "SELECT ag.id_categoria, ag.nombre_grupo, c.nombre_calibre
+                 FROM inst_agrupacion_calibre ag
+                 JOIN inst_agrupacion_calibre_detalle agd ON agd.id_agrupacion = ag.id
+                 JOIN inst_calibre c ON c.id = agd.id_calibre
+                 WHERE ag.id_especie = ? AND ag.id_exportadora = ?
+                   AND ag.id_categoria IN (
+                       SELECT DISTINCT id_categoria
+                       FROM inst_detalle_instructivo
+                       WHERE id_cab_instructivo = ? AND version = ?
+                   )
+                 ORDER BY ag.nombre_grupo, c.orden";
+    $stmtAgrup = sqlsrv_query($conn, $sqlAgrup, [$id_especie_cab, $id_exportadora_cab, $id_instructivo, $version]);
+    if ($stmtAgrup) {
+        while ($rowA = sqlsrv_fetch_array($stmtAgrup, SQLSRV_FETCH_ASSOC)) {
+            $mapaGruposPorCat[(int)$rowA['id_categoria']][$rowA['nombre_calibre']] = $rowA['nombre_grupo'];
+            $mapaGrupos[$rowA['nombre_calibre']] = $rowA['nombre_grupo']; // para header fila 12
+        }
+    }
+}
+
+$tieneAgrupaciones = !empty($mapaGrupos);
+
 // --- Crear Excel ---
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
@@ -171,7 +209,7 @@ $sheet->getPageMargins()->setHeader(0.15);
 $sheet->getPageMargins()->setFooter(0.15);
 
 $sheet->getSheetView()->setZoomScale(90);
-$sheet->freezePane('A13');
+$sheet->freezePane('A14');
 
 $spreadsheet->getDefaultStyle()->getFont()->setName('Arial')->setSize(10);
 $spreadsheet->getDefaultStyle()->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
@@ -263,6 +301,55 @@ $styleYellowFillObs = [
     ]
 ];
 
+$styleXCalibre = [
+    'fill' => [
+        'fillType' => Fill::FILL_SOLID,
+        'startColor' => ['argb' => 'FFFFFF99']
+    ],
+    'borders' => [
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+            'color' => ['argb' => Color::COLOR_BLACK]
+        ]
+    ],
+    'alignment' => [
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
+        'vertical'   => Alignment::VERTICAL_CENTER,
+        'wrapText'   => true
+    ],
+    'font' => [
+        'size' => 16,
+        'bold' => true,
+        'name' => 'Arial'
+    ]
+];
+
+$styleGrupoData = [
+    'fill' => [
+        'fillType' => Fill::FILL_SOLID,
+        'startColor' => ['argb' => 'FFB8CCE4']
+    ],
+    'font' => ['bold' => true, 'size' => 12, 'name' => 'Arial'],
+    'alignment' => [
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
+        'vertical'   => Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+];
+
+$styleGrupoHeader = [
+    'fill' => [
+        'fillType' => Fill::FILL_SOLID,
+        'startColor' => ['argb' => 'FFB8CCE4']
+    ],
+    'font' => ['bold' => true, 'size' => 10, 'name' => 'Arial'],
+    'alignment' => [
+        'horizontal' => Alignment::HORIZONTAL_CENTER,
+        'vertical'   => Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
+];
+
 $styleTableCell = [
     'borders' => [
         'allBorders' => [
@@ -302,37 +389,66 @@ $ultimaColTabla1 = Coordinate::stringFromColumnIndex($totalColumnasTabla1);
 $sheet->mergeCells("A1:{$ultimaColTabla1}1")->setCellValue('A1', 'INSTRUCTIVO PLANTA ALMAHUE');
 $sheet->mergeCells("A11:{$ultimaColTabla1}11")->setCellValue('A11', 'INFORMACION DE EMBALAJE');
 
-$sheet->setCellValue('A3', 'Exportadora:');
-$sheet->setCellValue('B3', $cabecera['nombre_exportadora']);
-$sheet->setCellValue('A4', 'Fecha:');
+$sheet->mergeCells('A3:B3')->setCellValue('A3', 'Exportadora:');
+$sheet->mergeCells('A4:B4')->setCellValue('A4', 'Fecha:');
+$sheet->mergeCells('A5:B5')->setCellValue('A5', 'Especie:');
+$sheet->mergeCells('A6:B6')->setCellValue('A6', 'Variedad Real:');
+$sheet->mergeCells('A7:B7')->setCellValue('A7', 'Turno:');
+$sheet->mergeCells('A8:B8')->setCellValue('A8', 'Número Instructivo:');
+$sheet->mergeCells('A9:B9')->setCellValue('A9', 'Versión:');
+
+$sheet->setCellValue('C3', $cabecera['nombre_exportadora']);
 
 if ($cabecera['fecha'] instanceof DateTime) {
-    $sheet->setCellValue('B4', $cabecera['fecha']->format('d-m-Y'));
+    $sheet->setCellValue('C4', $cabecera['fecha']->format('d-m-Y'));
 } else {
-    $sheet->setCellValue('B4', date('d-m-Y', strtotime((string)$cabecera['fecha'])));
+    $sheet->setCellValue('C4', date('d-m-Y', strtotime((string)$cabecera['fecha'])));
 }
 
-$sheet->setCellValue('A5', 'Especie:');
-$sheet->setCellValue('B5', $cabecera['nombre_especie']);
-$sheet->setCellValue('A6', 'Variedad Real:');
-$sheet->setCellValue('B6', $cabecera['variedad']);
-$sheet->setCellValue('A7', 'Turno:');
-$sheet->setCellValue('B7', $cabecera['turno']);
-$sheet->setCellValue('A8', 'Número Instructivo:');
-$sheet->setCellValue('B8', $cabecera['id_instructivo']);
-$sheet->setCellValue('A9', 'Versión:');
-$sheet->setCellValue('B9', $version);
+$sheet->setCellValue('C5', $cabecera['nombre_especie']);
+$sheet->setCellValue('C6', $cabecera['variedad']);
+$sheet->setCellValue('C7', $cabecera['turno'] ?? 'Sin turno');
+$sheet->setCellValue('C8', $cabecera['id_instructivo']);
+$sheet->setCellValue('C9', $version);
 
 $sheet->getStyle("A1:{$ultimaColTabla1}1")->applyFromArray($styleTitulo);
 $sheet->getStyle("A11:{$ultimaColTabla1}11")->applyFromArray($styleTitulo);
-$sheet->getStyle('A3:A9')->applyFromArray($estiloLineaA);
-$sheet->getStyle('B3:F9')->applyFromArray($estiloLineaB);
+$sheet->getStyle('A3:B9')->applyFromArray($estiloLineaA);
+$sheet->getStyle('C3:C9')->applyFromArray($estiloLineaB);
 
 foreach (range(1, 11) as $r) {
     $sheet->getRowDimension($r)->setRowHeight(22);
 }
 $sheet->getRowDimension(1)->setRowHeight(28);
 $sheet->getRowDimension(11)->setRowHeight(28);
+
+// --- Fila de agrupaciones de calibres (fila 12) ---
+if ($tieneAgrupaciones) {
+    $sheet->getRowDimension(12)->setRowHeight(18);
+    $calibreColBase = 6; // las 5 columnas fijas van de 1 a 5
+    // Calcular rango de columnas por grupo
+    $gruposRango = [];
+    foreach ($calibres as $idx => $cal) {
+        $grupo = $mapaGrupos[$cal] ?? null;
+        if ($grupo !== null) {
+            $colIdx = $calibreColBase + $idx;
+            if (!isset($gruposRango[$grupo])) {
+                $gruposRango[$grupo] = ['start' => $colIdx, 'end' => $colIdx];
+            } else {
+                $gruposRango[$grupo]['end'] = $colIdx;
+            }
+        }
+    }
+    foreach ($gruposRango as $nombre => $cols) {
+        $cA = Coordinate::stringFromColumnIndex($cols['start']) . '12';
+        $cB = Coordinate::stringFromColumnIndex($cols['end']) . '12';
+        if ($cols['start'] !== $cols['end']) {
+            $sheet->mergeCells("{$cA}:{$cB}");
+        }
+        $sheet->setCellValue($cA, $nombre);
+        $sheet->getStyle("{$cA}:{$cB}")->applyFromArray($styleGrupoHeader);
+    }
+}
 
 // --- Encabezados Tabla 1 ---
 $filaEncabezados = 13;
@@ -362,7 +478,7 @@ foreach ($extraEncabezados as $e) {
 }
 
 $sheet->getRowDimension($filaEncabezados)->setRowHeight(32);
-$sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(13, 13);
+$sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(12, 13);
 
 // --- Cuerpo Tabla 1 ---
 $filaContenido = $filaEncabezados + 1;
@@ -409,11 +525,32 @@ foreach ($agrupadoPorPedido as $pedido => $filas) {
         $sheet->setCellValue(Coordinate::stringFromColumnIndex($col++) . $filaContenido, $filaDatos['embalaje_des']);
         $sheet->setCellValue(Coordinate::stringFromColumnIndex($col++) . $filaContenido, $filaDatos['etiqueta']);
 
+        $gruposEstaFila1 = $mapaGruposPorCat[(int)($filaDatos['id_categoria'] ?? 0)] ?? [];
+        $gruposRangoFila1 = [];
         foreach ($calibres as $cal) {
-            $valor = $filaDatos['calibres'][$cal] ?? '';
-            $cell = Coordinate::stringFromColumnIndex($col++) . $filaContenido;
-            $sheet->setCellValue($cell, $valor);
-            $sheet->getStyle($cell)->applyFromArray(is_numeric($valor) ? $styleYellowFill : $styleTableCell);
+            $grupo = $gruposEstaFila1[$cal] ?? null;
+            $cell  = Coordinate::stringFromColumnIndex($col) . $filaContenido;
+            if ($grupo !== null) {
+                if (!isset($gruposRangoFila1[$grupo])) {
+                    $gruposRangoFila1[$grupo] = ['start' => $col, 'end' => $col];
+                } else {
+                    $gruposRangoFila1[$grupo]['end'] = $col;
+                }
+                $sheet->getStyle($cell)->applyFromArray($styleGrupoData);
+            } else {
+                $valor = $filaDatos['calibres'][$cal] ?? '';
+                if ($valor === 0 || $valor === '0') $valor = 'X';
+                $sheet->setCellValue($cell, $valor);
+                $sheet->getStyle($cell)->applyFromArray($valor === 'X' ? $styleXCalibre : (is_numeric($valor) ? $styleYellowFill : $styleTableCell));
+            }
+            $col++;
+        }
+        foreach ($gruposRangoFila1 as $nombreGrupo => $cols) {
+            $cA = Coordinate::stringFromColumnIndex($cols['start']) . $filaContenido;
+            $cB = Coordinate::stringFromColumnIndex($cols['end'])   . $filaContenido;
+            if ($cols['start'] !== $cols['end']) $sheet->mergeCells("{$cA}:{$cB}");
+            $sheet->setCellValue($cA, $nombreGrupo);
+            $sheet->getStyle("{$cA}:{$cB}")->applyFromArray($styleGrupoData);
         }
 
         $sheet->setCellValue(Coordinate::stringFromColumnIndex($col++) . $filaContenido, $filaDatos['categoria']);
@@ -434,7 +571,25 @@ $sheet->mergeCells("A{$filaPalTitulo}:N{$filaPalTitulo}")->setCellValue("A{$fila
 $sheet->getStyle("A{$filaPalTitulo}:N{$filaPalTitulo}")->applyFromArray($styleTitulo);
 $sheet->getRowDimension($filaPalTitulo)->setRowHeight(28);
 
-$filaEncabezados2 = $filaPalTitulo + 2;
+// Fila de agrupaciones para tabla 2
+if ($tieneAgrupaciones) {
+    $filaGrupos2 = $filaPalTitulo + 2;
+    $sheet->getRowDimension($filaGrupos2)->setRowHeight(18);
+    $calibreColBase2 = 6; // cols C,D,E son fijas (Pedido, Cod Env, Tipo Pallet), calibres desde col 6
+    foreach ($gruposRango as $nombre => $cols) {
+        $cA = Coordinate::stringFromColumnIndex($cols['start']) . $filaGrupos2;
+        $cB = Coordinate::stringFromColumnIndex($cols['end']) . $filaGrupos2;
+        if ($cols['start'] !== $cols['end']) {
+            $sheet->mergeCells("{$cA}:{$cB}");
+        }
+        $sheet->setCellValue($cA, $nombre);
+        $sheet->getStyle("{$cA}:{$cB}")->applyFromArray($styleGrupoHeader);
+    }
+    $filaEncabezados2 = $filaPalTitulo + 3;
+} else {
+    $filaEncabezados2 = $filaPalTitulo + 2;
+}
+
 $colIndex = 3;
 
 $encabezadosFijos2 = ['Pedido', 'Código Envase / Etiqueta', 'Tipo Pallet'];
@@ -481,14 +636,36 @@ foreach ($agrupadoPorPedido as $pedido => $filas) {
         $sheet->setCellValue(Coordinate::stringFromColumnIndex($col++) . $filaContenido2, $filaDatos['embalaje_cod'] . '/' . $filaDatos['etiqueta']);
         $sheet->setCellValue(Coordinate::stringFromColumnIndex($col++) . $filaContenido2, $filaDatos['pallet']);
 
+        $gruposEstaFila2 = $mapaGruposPorCat[(int)($filaDatos['id_categoria'] ?? 0)] ?? [];
+        $gruposRangoFila2 = [];
         foreach ($calibres as $cal) {
-            $valor = $filaDatos['calibres'][$cal] ?? '';
-            $cell = Coordinate::stringFromColumnIndex($col++) . $filaContenido2;
-            $sheet->setCellValue($cell, $valor);
-            $sheet->getStyle($cell)->applyFromArray(is_numeric($valor) ? $styleYellowFill : $styleTableCell);
+            $grupo = $gruposEstaFila2[$cal] ?? null;
+            $cell  = Coordinate::stringFromColumnIndex($col) . $filaContenido2;
+            if ($grupo !== null) {
+                if (!isset($gruposRangoFila2[$grupo])) {
+                    $gruposRangoFila2[$grupo] = ['start' => $col, 'end' => $col];
+                } else {
+                    $gruposRangoFila2[$grupo]['end'] = $col;
+                }
+                $sheet->getStyle($cell)->applyFromArray($styleGrupoData);
+            } else {
+                $valor = $filaDatos['calibres'][$cal] ?? '';
+                if ($valor === 0 || $valor === '0') $valor = 'X';
+                $sheet->setCellValue($cell, $valor);
+                $sheet->getStyle($cell)->applyFromArray($valor === 'X' ? $styleXCalibre : (is_numeric($valor) ? $styleYellowFill : $styleTableCell));
+            }
+            $col++;
+        }
+        foreach ($gruposRangoFila2 as $nombreGrupo => $cols) {
+            $cA = Coordinate::stringFromColumnIndex($cols['start']) . $filaContenido2;
+            $cB = Coordinate::stringFromColumnIndex($cols['end'])   . $filaContenido2;
+            if ($cols['start'] !== $cols['end']) $sheet->mergeCells("{$cA}:{$cB}");
+            $sheet->setCellValue($cA, $nombreGrupo);
+            $sheet->getStyle("{$cA}:{$cB}")->applyFromArray($styleGrupoData);
         }
 
         $cantidadPedido = $pedidoCantidades[$pedido] ?? '';
+        if ($cantidadPedido === 0 || $cantidadPedido === '0') $cantidadPedido = 'TODOS';
         if ($filaContenido2 == $rowStart) {
             $sheet->setCellValue(Coordinate::stringFromColumnIndex($col) . $rowStart, $cantidadPedido);
             if ($rowEnd > $rowStart) {

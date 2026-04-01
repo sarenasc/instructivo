@@ -168,9 +168,16 @@ foreach ($detalle as $det) {
     }
 }
 
+// Obtener versión máxima real
+$sql_max = "SELECT MAX(version) as max_version FROM inst_detalle_instructivo WHERE id_cab_instructivo = ?";
+$stmt_max = sqlsrv_query($conn, $sql_max, [$id_instructivo]);
+$row_max = sqlsrv_fetch_array($stmt_max, SQLSRV_FETCH_ASSOC);
+$max_version = $row_max['max_version'] ?? $version;
+
 echo json_encode([
     'cabecera' => $cabecera,
     'version_actual' => $version,
+    'max_version' => (int)$max_version,
     'pedidos' => $pedidos,
     'detalle' => array_values($detalleAgrupado)
 ]);

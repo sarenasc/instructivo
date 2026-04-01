@@ -97,7 +97,6 @@ require_once '../includes/header.php';
                                     <th>Fecha</th>
                                     <th>Turno</th>
                                     <th>Versiones</th>
-                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla_instructivos_body">

@@ -50,7 +50,7 @@ $sqlDet = "SELECT
     ca.nombre_categoria AS categoria,
     p.Descrip_pallet,
     i.altura_pallet,
-    CONCAT(ap.altura,'/',ap.cajas) as Altura,
+    CASE WHEN ap.id IS NOT NULL THEN CONCAT(ap.altura,'/',ap.cajas) ELSE NULL END as Altura,
     i.observacion,
     c.nombre_calibre,
     c.orden as Orden_Calibre,

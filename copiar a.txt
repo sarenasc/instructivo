@@ -1,0 +1,14 @@
+Archivos modificados en C:\xampp\htdocs\instructivo
+================================================
+
+app/exportar_excel_formato2.php
+app/includes/menu.php
+app/Configuracion/agrupacion_calibre.php
+app/assets/js/agrupacion_calibre.js
+app/models/obtener_agrupacion_calibre.php
+app/controllers/procesar_agrupacion_calibre.php
+migrate_agrupacion_calibre.sql
+migrate_agrupacion_calibre_alter.sql
+migrate_agrupacion_calibre_v2.sql
+app/models/obtener_calibres_por_agrupacion.php
+app/copiar_instructivo.php

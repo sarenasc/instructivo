@@ -38,6 +38,7 @@
                         <li><a class="dropdown-item" href="/instructivo/app/Configuracion/exportadora.php">Exportadora</a></li>
                         <li><a class="dropdown-item" href="/instructivo/app/Configuracion/destino.php">Destino</a></li>
                         <li><a class="dropdown-item" href="/instructivo/app/Configuracion/inst_altura_pallet.php">Altura Pallet</a></li>
+                        <li><a class="dropdown-item" href="/instructivo/app/Configuracion/agrupacion_calibre.php">Agrupación Calibres</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/instructivo/app/Configuracion/edicion_config.php">Edición de Configuración</a></li>
                     </ul>

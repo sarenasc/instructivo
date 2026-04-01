@@ -62,6 +62,18 @@ if (!$nuevoId) {
     exit;
 }
 
+// Obtener pedidos originales para copiar cantidad y prioridad
+$stmtPedOrig = sqlsrv_query($conn,
+    "SELECT numero_pedido, cantidad, prioridad FROM inst_pedidos WHERE id_instructivo = ? AND version = ? ORDER BY prioridad ASC",
+    [$idInstructivoOriginal, $versionOriginal]
+);
+$pedidosOriginales = [];
+if ($stmtPedOrig) {
+    while ($row = sqlsrv_fetch_array($stmtPedOrig, SQLSRV_FETCH_ASSOC)) {
+        $pedidosOriginales[$row['numero_pedido']] = $row;
+    }
+}
+
 // Insertar solo las filas enviadas desde el frontend (con posibles cambios de pedido)
 $sqlDet = "INSERT INTO inst_detalle_instructivo (
     id_cab_instructivo, version, numero_pedido, var_etiquetada,
@@ -90,6 +102,28 @@ foreach ($detalles as $fila) {
     $stmt = sqlsrv_query($conn, $sqlDet, $params);
     if (!$stmt) {
         echo json_encode(["success" => false, "message" => "Error al insertar detalle", "detalle" => sqlsrv_errors()]);
+        exit;
+    }
+}
+
+// Insertar pedidos únicos en inst_pedidos
+$pedidosInsertados = [];
+$prioridadNuevo = count($pedidosOriginales) + 1;
+foreach ($detalles as $fila) {
+    $numPedido = $fila['numero_pedido'] ?? null;
+    if ($numPedido === null || isset($pedidosInsertados[$numPedido])) continue;
+
+    $pedidosInsertados[$numPedido] = true;
+    $orig = $pedidosOriginales[$numPedido] ?? null;
+    $cantidad  = $orig ? $orig['cantidad']  : null;
+    $prioridad = $orig ? $orig['prioridad'] : $prioridadNuevo++;
+
+    $stmtPed = sqlsrv_query($conn,
+        "INSERT INTO inst_pedidos (id_instructivo, version, numero_pedido, cantidad, prioridad) VALUES (?, 1, ?, ?, ?)",
+        [$nuevoId, $numPedido, $cantidad, $prioridad]
+    );
+    if (!$stmtPed) {
+        echo json_encode(["success" => false, "message" => "Error al insertar pedido", "detalle" => sqlsrv_errors()]);
         exit;
     }
 }

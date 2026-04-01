@@ -105,25 +105,28 @@ async function buscarInstructivos() {
             return;
         }
         
-        // Obtener versiones por instructivo
         for (const inst of instructivos) {
             const row = tbody.insertRow();
+            row.id = `row_inst_${inst.id_instructivo}`;
             row.innerHTML = `
                 <td><strong>${inst.id_instructivo}</strong></td>
                 <td>${inst.nombre_exportadora}</td>
                 <td>${inst.especie}</td>
                 <td>${inst.fecha}</td>
                 <td>${inst.turno || '-'}</td>
-                <td><span class="badge bg-primary" id="badge_ver_${inst.id_instructivo}">Cargando...</span></td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="cargarInstructivo(${inst.id_instructivo})">
-                        ✏️ Editar / Crear Versión
+                    <button class="btn btn-sm btn-outline-primary" id="btn_toggle_${inst.id_instructivo}"
+                            onclick="toggleVersiones(${inst.id_instructivo}, this)">
+                        + Versiones
                     </button>
                 </td>
             `;
-            
-            // Cargar versiones
-            cargarVersionesBadge(inst.id_instructivo);
+
+            // Fila oculta donde se inyectarán las versiones
+            const subRow = tbody.insertRow();
+            subRow.id = `subrow_${inst.id_instructivo}`;
+            subRow.style.display = 'none';
+            subRow.innerHTML = `<td colspan="6" class="p-0"></td>`;
         }
         
         document.getElementById('lista_instructivos').style.display = 'block';
@@ -141,12 +144,65 @@ async function cargarVersionesBadge(idInstructivo) {
         const versiones = await resp.json();
         const maxVersion = versiones.length > 0 ? Math.max(...versiones.map(v => v.version)) : 1;
         const badge = document.getElementById(`badge_ver_${idInstructivo}`);
-        badge.textContent = `V${maxVersion}`;
-        badge.className = 'badge bg-success version-badge';
+        if (badge) {
+            badge.textContent = `V${maxVersion}`;
+            badge.className = 'badge bg-success version-badge';
+        }
     } catch (error) {
         console.error('Error cargando versiones:', error);
-        document.getElementById(`badge_ver_${idInstructivo}`).textContent = '1';
     }
+}
+
+// ===== ÁRBOL DE VERSIONES =====
+const _versionesCache = {};
+
+async function toggleVersiones(idInstructivo, btnEl) {
+    const subRow = document.getElementById(`subrow_${idInstructivo}`);
+    const abierto = subRow.style.display !== 'none';
+
+    if (abierto) {
+        subRow.style.display = 'none';
+        btnEl.textContent = '+ Versiones';
+        btnEl.className = 'btn btn-sm btn-outline-primary';
+        return;
+    }
+
+    // Cargar versiones si aún no están en caché
+    if (!_versionesCache[idInstructivo]) {
+        btnEl.textContent = '...';
+        btnEl.disabled = true;
+        try {
+            const resp = await fetch(`../models/obtener_versiones.php?id_instructivo=${idInstructivo}`);
+            _versionesCache[idInstructivo] = await resp.json();
+        } catch (e) {
+            console.error('Error cargando versiones:', e);
+            btnEl.textContent = '+ Versiones';
+            btnEl.disabled = false;
+            return;
+        }
+        btnEl.disabled = false;
+    }
+
+    const versiones = _versionesCache[idInstructivo];
+    const maxVer = versiones.length > 0 ? Math.max(...versiones.map(v => v.version)) : 0;
+
+    let botonesHTML = '<div class="d-flex align-items-center flex-wrap gap-2 px-3 py-2" style="background:#f0f4ff; border-left:3px solid #667eea;">';
+    botonesHTML += '<span class="text-muted small me-1" style="font-size:11px;">VERSIONES:</span>';
+
+    versiones.forEach(v => {
+        const esUltima = v.version === maxVer;
+        const clase = esUltima ? 'btn btn-sm btn-success' : 'btn btn-sm btn-outline-secondary';
+        botonesHTML += `<button class="${clase}" onclick="cargarInstructivo(${idInstructivo}, ${v.version})">
+            V${v.version}${esUltima ? ' (última)' : ''}
+        </button>`;
+    });
+
+    botonesHTML += '</div>';
+
+    subRow.querySelector('td').innerHTML = botonesHTML;
+    subRow.style.display = '';
+    btnEl.textContent = '− Versiones';
+    btnEl.className = 'btn btn-sm btn-primary';
 }
 
 function limpiarFiltros() {
@@ -157,11 +213,13 @@ function limpiarFiltros() {
 }
 
 // ===== CARGAR INSTRUCTIVO PARA EDICIÓN =====
-async function cargarInstructivo(idInstructivo) {
+async function cargarInstructivo(idInstructivo, version = null) {
     idInstructivoSeleccionado = idInstructivo;
-    
+
     try {
-        const resp = await fetch(`../models/obtener_instructivo_para_edicion.php?id_instructivo=${idInstructivo}`);
+        let url = `../models/obtener_instructivo_para_edicion.php?id_instructivo=${idInstructivo}`;
+        if (version !== null) url += `&version=${version}`;
+        const resp = await fetch(url);
         const data = await resp.json();
         
         if (data.error) {
@@ -171,18 +229,19 @@ async function cargarInstructivo(idInstructivo) {
         
         instructivoActual = data;
         versionActual = data.version_actual;
+        const maxVersion = data.max_version ?? versionActual;
         pedidosEdit = [...data.pedidos];
         detalleEdit = [...data.detalle];
-        
+
         // Mostrar formulario
         document.getElementById('lista_instructivos').style.display = 'none';
         document.getElementById('formulario_edicion').style.display = 'block';
-        
+
         // Llenar cabecera
         document.getElementById('edit_id_instructivo').textContent = idInstructivo;
         document.getElementById('edit_version').textContent = versionActual;
         document.getElementById('edit_version_actual').value = `Versión ${versionActual}`;
-        document.getElementById('btn_nueva_version').textContent = versionActual + 1;
+        document.getElementById('btn_nueva_version').textContent = maxVersion + 1;
         
         document.getElementById('edit_exportadora').value = data.cabecera.id_exportadora;
         document.getElementById('edit_especie').value = data.cabecera.id_especie;
